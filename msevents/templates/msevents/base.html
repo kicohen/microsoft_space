@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+	<head>
+	    <meta charset="utf-8">
+	    {% load staticfiles %}
+	    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css">
+		<title> {% block title %} MS Events {% endblock %} </title>
+		<!-- Jquery -->
+		{% block js %}
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js"
+		integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+		crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		{% endblock %}
+	</head>
+
+	<body>
+    <nav class="navbar navbar-default navbar-static-top navbar-inverse">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Microsoft Space</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+				<li><a href="#">Calendar</a></li>
+				<li><a href="#">About</a></li>
+				<li><a href="#">Rooms</a></li>
+				<li><a href="#">Request Event</a></li>
+				{% if account_type == "Administrator" %}
+				<li><a href="#">Members</a></li>
+				{% endif%}
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+				{% if logged_in %}
+				<li><a href="{% url 'profile' %}">Profile</a></li>
+				<li><a href="{% url 'logout' %}">Logout</a></li>
+				{% else %}
+				<li><a href="{% url 'register' %}">Register</a></li>
+				<li><a href="{% url 'login' %}">Login</a></li>
+				{% endif %}
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    {% if message %}
+    <div class="container">
+        <div class="alert alert-success" role="alert">
+            {{message}}
+        </div>
+    </div>
+	{% endif %}	
+
+	    <div class="container">
+		    <div class="page">
+
+		    <div class="content">
+			    {% block content %}
+			    {% endblock %}
+			</div>
+
+			</div>
+		</div>
+	</body>
+</html>
