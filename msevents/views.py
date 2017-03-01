@@ -19,7 +19,7 @@ from django.http import HttpResponse, JsonResponse
 from datetime import datetime
 # Create your views here.
 
-def home(request):
+def createContext(request):
 	if str(request.user) != 'AnonymousUser':
 		logged_in = True
 		account_type = request.user.profile.account_type
@@ -27,10 +27,19 @@ def home(request):
 		logged_in = False
 		account_type = "Guest"
 	context = { 'account_type': account_type, 'logged_in':logged_in}
+	return context
+
+def home(request):
+	context = createContext(request)
 	return render(request, 'msevents/home.html', context)
 
 def profile(request):
-	pass
+	context = createContext(request)
+	return render(request, 'msevents/home.html', context)
+
+def spaces(request):
+	context = createContext(request)
+	return render(request, 'msevents/spaces.html', context)
 
 @transaction.atomic
 def register(request):
@@ -70,12 +79,12 @@ verify your email address and complete the registration of your account:
 
     send_mail(subject="Verify your email address",
               message= email_body,
-              from_email="microsoft@cmu.edu",
+              from_email="Microsoft@cmu.edu",
               recipient_list=[new_user.email])
 
-    message = "A confirmation email has been sent to" + form.cleaned_data['email'] + "Please click the link in that email to confirm your email address and complete your registration for your address book."
+    message = "A confirmation email has been sent to" + form.cleaned_data['email'] + ". Please click the link in that email to confirm your email address and complete your registration for your address book."
     context['message'] = message
-    return render(request, 'msevents/needs-confirmation.html', context)
+    return render(request, 'msevents/home.html', context)
 
 @transaction.atomic
 def confirm_registration(request, username, token):
@@ -88,7 +97,7 @@ def confirm_registration(request, username, token):
     # Otherwise token was valid, activate the user.
     user.is_active = True
     user.save()
-    return render(request, 'msevents/home.html', {message: "Thank you for confirming your email address. Please login to continue."})
+    return render(request, 'msevents/home.html', {'message': "Thank you for confirming your email address. Please login to continue."})
 
 
 

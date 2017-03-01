@@ -4,7 +4,8 @@ from msevents import views as msevents_views
 
 urlpatterns = [
     url(r'^$', msevents_views.home, name='home'),
-    url(r'^$', msevents_views.profile, name='profile'),
+    url(r'^spaces$', msevents_views.spaces, name='spaces'),
+    url(r'^profile$', msevents_views.profile, name='profile'),
     url(r'^login$', auth_views.login, {'template_name':'msevents/login.html'}, name='login'),
     url(r'^logout/$',auth_views.logout, {'next_page':'home'}, name='logout'),
     url(r'^register$', msevents_views.register, name='register'),

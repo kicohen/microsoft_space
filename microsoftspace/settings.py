@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/1.10/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.10/ref/settings/
 """
-
+import configparser
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -130,3 +130,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
+config = configparser.ConfigParser()
+config.read(os.path.join(BASE_DIR, 'config.ini'))
+
+EMAIL_HOST = config.get('Email', 'Host')
+EMAIL_PORT = config.get('Email', 'Port')
+EMAIL_HOST_USER = config.get('Email', 'User')
+EMAIL_HOST_PASSWORD = config.get('Email', 'Password')
+EMAIL_USE_SSL = True
+
+print('EMAIL_HOST',EMAIL_HOST+':'+str(EMAIL_PORT))
+print('EMAIL_HOST_USER',EMAIL_HOST_USER)

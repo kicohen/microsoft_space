@@ -45,3 +45,21 @@ class RegistrationForm(forms.Form):
         # We must return the cleaned data we got from the cleaned_data
         # dictionary
         return username
+
+class EventForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        exclude = (
+            'status',
+            'contact',
+        )
+
+class EventDateForm(forms.ModelForm):
+    class Meta:
+        model = EventDate
+        exclude = ()
+
+class EventDateLocationForm(forms.ModelForm):
+    class Meta:
+        model = EventDateLocation
+        exclude = ()
