@@ -41,6 +41,19 @@ def spaces(request):
 	context = createContext(request)
 	return render(request, 'msevents/spaces.html', context)
 
+def calendar(request):
+	context = createContext(request)
+	events = []
+	for date in EventDate.objects.all():
+		event_data = dict()
+		event_data['title'] = date.event_id.name
+		event_data['startsAt'] = str(date.start_date)
+		event_data['endsAt'] = str(date.end_date)
+		event_data['color'] = {'primary':'#7FBA00', 'secondary':'#F25022'}
+		events.append(event_data)
+	context['events'] = str(events)
+	return render(request, 'msevents/calendar.html', context)
+
 @transaction.atomic
 def register(request):
     context = {}

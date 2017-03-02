@@ -1,0 +1,96 @@
+{% extends "msevents/base.html" %}
+
+{% block js %}
+    {{ block.super }} {# includes previous content in block #}
+    {% load staticfiles %}
+    <script type="text/javascript" src="{% static 'js/moment.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendors/interactjs/interact.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+
+    <script src="https://unpkg.com/angular-animate@1.6.1/angular-animate.js"></script>
+
+    <script type="text/javascript" src="{% static 'vendors/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js' %}"></script>
+
+    <script src="https://unpkg.com/rrule@2"></script>
+    <script src="https://unpkg.com/angular-bootstrap-colorpicker@3"></script>
+
+    <script src="https://unpkg.com/angular-bootstrap-calendar"></script>
+
+    <link href="https://unpkg.com/angular-bootstrap-colorpicker@3/css/colorpicker.min.css" rel="stylesheet">
+    <link href="{% static 'vendors/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.min.css' %}" rel="stylesheet">
+
+    <script type="text/javascript" src="{% static 'js/example.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/helpers.js' %}"></script>
+{% endblock %}
+
+{% block content %}  
+
+ <div ng-controller="KitchenSinkCtrl as vm">
+  <h2 class="text-center">{% verbatim %}{{ vm.calendarTitle }}{% endverbatim %} </h2>
+
+  <div class="row">
+
+    <div class="col-md-6 text-center">
+      <div class="btn-group">
+
+        <button
+          class="btn btn-primary"
+          mwl-date-modifier
+          date="vm.viewDate"
+          decrement="vm.calendarView"
+          ng-click="vm.cellIsOpen = false">
+          Previous
+        </button>
+        <button
+          class="btn btn-default"
+          mwl-date-modifier
+          date="vm.viewDate"
+          set-to-today
+          ng-click="vm.cellIsOpen = false">
+          Today
+        </button>
+        <button
+          class="btn btn-primary"
+          mwl-date-modifier
+          date="vm.viewDate"
+          increment="vm.calendarView"
+          ng-click="vm.cellIsOpen = false">
+          Next
+        </button>
+      </div>
+    </div>
+
+    <br class="visible-xs visible-sm">
+
+    <div class="col-md-6 text-center">
+      <div class="btn-group">
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'year'" ng-click="vm.cellIsOpen = false">Year</label>
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'month'" ng-click="vm.cellIsOpen = false">Month</label>
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'week'" ng-click="vm.cellIsOpen = false">Week</label>
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'day'" ng-click="vm.cellIsOpen = false">Day</label>
+      </div>
+    </div>
+
+  </div>
+
+  <br>
+
+  <mwl-calendar
+    events="{{ events }}"
+    view="vm.calendarView"
+    view-title="vm.calendarTitle"
+    view-date="vm.viewDate"
+    on-event-click="vm.eventClicked(calendarEvent)"
+    on-event-times-changed="vm.eventTimesChanged(calendarEvent); calendarEvent.startsAt = calendarNewEventStart; calendarEvent.endsAt = calendarNewEventEnd"
+    cell-is-open="vm.cellIsOpen"
+    day-view-start="06:00"
+    day-view-end="22:59"
+    day-view-split="30"
+    cell-modifier="vm.modifyCell(calendarCell)"
+    cell-auto-open-disabled="true"
+    on-timespan-click="vm.timespanClicked(calendarDate, calendarCell)">
+  </mwl-calendar>
+
+  <br><br><br>
+
+{% endblock %}

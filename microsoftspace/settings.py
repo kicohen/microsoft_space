@@ -106,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'EST'
 
 USE_I18N = True
 
@@ -138,6 +138,3 @@ EMAIL_PORT = config.get('Email', 'Port')
 EMAIL_HOST_USER = config.get('Email', 'User')
 EMAIL_HOST_PASSWORD = config.get('Email', 'Password')
 EMAIL_USE_SSL = True
-
-print('EMAIL_HOST',EMAIL_HOST+':'+str(EMAIL_PORT))
-print('EMAIL_HOST_USER',EMAIL_HOST_USER)
