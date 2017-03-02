@@ -5,8 +5,8 @@
 	    {% load staticfiles %}
 	    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		<link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css">
-		<title> {% block title %} MS Events {% endblock %} </title>
-		<!-- Jquery -->
+		<title> {% block title %} The Microsoft Space {% endblock %} </title>
+		<!-- Javascript Files -->
 		{% block js %}
 		<script src="https://code.jquery.com/jquery-3.1.1.min.js"
 		integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
@@ -31,6 +31,10 @@
 		<meta name="msapplication-TileColor" content="#ffffff">
 		<meta name="msapplication-TileImage" content="{% static 'favicon/ms-icon-144x144.png' %}">
 		<meta name="theme-color" content="#ffffff">
+		<!-- Viewport -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<!-- Font -->
+		<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,500' rel='stylesheet' type='text/css'>
 	</head>
 
 	<body>

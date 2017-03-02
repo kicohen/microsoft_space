@@ -1,0 +1,66 @@
+.navbar-inverse {
+	color: white;
+	font-family: 'Roboto';
+	font-weight: 300;
+	border: none;
+}
+
+#navbar ul li a{
+	color: white;
+	min-width: 100%;
+	width: 100%;
+	text-align: center;
+}
+
+@media screen and (min-width: 1200px){
+	#navbar ul li a{
+		width: 130px;
+	}
+}
+
+#navbar ul li{
+	background-color: #333434;
+}
+
+#navbar ul li:hover{
+	background-color: #070707;
+}
+
+#navbar ul:first-child li:nth-child(1){
+	background-color: #f65314;
+}
+
+#navbar ul:first-child li:nth-child(1):hover{
+	background-color: #DD4001;
+}
+
+#navbar ul:first-child li:nth-child(2){
+	background-color: #FFB900;
+}
+
+#navbar ul:first-child li:nth-child(2):hover{
+	background-color: #DDA100;
+}
+
+#navbar ul:first-child li:nth-child(3){
+	background-color: #7cbb00;
+}
+
+#navbar ul:first-child li:nth-child(3):hover{
+	background-color: #71AA00;
+}
+
+#navbar ul:first-child li:nth-child(4){
+	background-color: #00a1f1;
+}
+
+#navbar ul:first-child li:nth-child(4):hover{
+	background-color: #0082C1;
+}
+
+.navbar-header a{	
+	color: white !important;
+}
+
+.navbar-brand:hover{	
+	background-color: #080909 !important;}
