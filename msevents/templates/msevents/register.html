@@ -1,13 +1,22 @@
 {% extends "msevents/base.html" %}
 
 {% block content %}
-    <p>Register for the Microsoft Space at CMU:</p>
+<div class="">
+    <h3>Register for the Microsoft Space at CMU:</h3>
 
     <form method="post" action="{% url 'register' %}">
-        <table>
-            {{form}}
-        </table>
-        {% csrf_token %}
-        <input type="submit" value="Register" />
+    {% for hidden in form.hidden_fields %}
+    {{ hidden }}
+    {% endfor %}
+    {% for field in form.visible_fields %}
+    <div class="form-group">
+        {{ field.errors }}
+        {{ field.label_tag }} 
+        <input id="{{ field.auto_id }}" type="{% if 'password' in field.auto_id %}Password{% else %}Text{% endif %}" name="{{ field.html_name }}" class="form-control">
+    </div>
+    {% endfor %}
+    {% csrf_token %}
+    <input type="submit" value="Register" class="btn btn-lg btn-primary btn-block" />
     </form>
+</div>
 {% endblock %}

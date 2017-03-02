@@ -49,7 +49,7 @@ def calendar(request):
 		event_data['title'] = date.event_id.name
 		event_data['startsAt'] = str(date.start_date)
 		event_data['endsAt'] = str(date.end_date)
-		event_data['color'] = {'primary':'#7FBA00', 'secondary':'#F25022'}
+		event_data['color'] = {'primary':'#7FBA00', 'secondary':'#ddd'}
 		events.append(event_data)
 	context['events'] = str(events)
 	return render(request, 'msevents/calendar.html', context)
@@ -95,7 +95,7 @@ verify your email address and complete the registration of your account:
               from_email="Microsoft@cmu.edu",
               recipient_list=[new_user.email])
 
-    message = "A confirmation email has been sent to" + form.cleaned_data['email'] + ". Please click the link in that email to confirm your email address and complete your registration for your address book."
+    message = "A confirmation email has been sent to " + form.cleaned_data['email'] + ". Please click the link in that email to confirm your email address and complete your registration for your address book."
     context['message'] = message
     return render(request, 'msevents/home.html', context)
 
