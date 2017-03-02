@@ -1,0 +1,99 @@
+{% extends "msevents/base.html" %}
+
+{% block content %}
+<style type="text/css">
+.stylish-panel {
+    padding: 20px 0;
+    text-align: left;
+}
+.stylish-panel > div > div{
+    padding: 10px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    transition: 0.2s;
+}
+.stylish-panel h2{
+  text-align: center;
+}
+div.circle-avatar{
+/* make it responsive */
+max-width: 100%;
+width:100%;
+height:auto;
+display:block;
+/* div height to be the same as width*/
+padding-top:100%;
+
+/* make it a circle */
+border-radius:50%;
+
+/* Centering on image`s center*/
+background-position-y: center;
+background-position-x: left;
+background-repeat: no-repeat;
+
+/* it makes the clue thing, takes smaller dimension to fill div */
+background-size: cover;
+
+/* it is optional, for making this div centered in parent*/
+margin: 0 auto;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+}
+</style>
+<div class="container">
+  <div class="page-header">
+    <h1 class="text-center">Spaces and Technology</h1>
+  </div>
+  <p class="lead text-center">This space was created with the idea that “if we don’t have good internet, we don’t have anything.” The space makes use of a variety of different technology for student, visitor, and faculty use. The space has 3D printers, a video wall, Fios Internet, dual monitor docking stations and a Sonos sound system.</p>
+  <div class="container">
+    <div class="row stylish-panel">
+      <div class="col-sm-4">
+        <div>
+          <div class="circle-avatar" style='background-image: url("static/img/main_room.jpg")' alt="Texto Alternativo"></div>
+          <h2>Main Room</h2>
+          <p>Lounge-type room with couches and relaxed seating. This can be rearranged to comfortably fit 50 people. Great for tech talks, lounging, meetings, content display, xbox tournaments, demos. Includes:
+          </p>
+          <ul>
+            <li>2 couches</li>
+            <li>5 bag chairs</li>
+            <li>9 screen video wall w/ sonos sound system</li>
+            <li>Track lighting on two opposite corners for highlights on speaker/demo</li>
+            <li>Curtained off meeting room that seats 8, with chalk wall</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div>
+          <div class="circle-avatar" style='background-image: url("static/img/ms_wall.jpg")' alt="Texto Alternativo"></div>
+          <h2>Lab</h2>
+          <p>63ft-long room with standing work space and nook with relaxed seating and 72inch tv w/ sonos capability. Great for working, building, lounging, large group hacks, team or club meetings Includes:
+          </p>
+          <ul>
+            <li>40ft of stainless steel standing work space</li>
+            <li>three 3d printers</li>
+            <li>seating along stainless steel work bench, around table, and nook</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div>
+          <div class="circle-avatar" style='background-image: url("static/img/office.jpg")' alt="Texto Alternativo"></div>
+          <h2>Office</h2>
+          <p>Three separate closed work spaces attached to lab. Great for working privately and quietly. Includes ( per office ):
+          </p>
+          <ul>
+            <li>Two sit/stand desks</li>
+            <li>2 30” HD monitors per desk</li>
+            <li>1 docking station per desk</li>
+            <li>Whiteboard</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /container -->
+{% endblock %}

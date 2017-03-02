@@ -1,0 +1,13 @@
+{% extends "msevents/base.html" %}
+
+{% block content %}
+    <p>Register for the Microsoft Space at CMU:</p>
+
+    <form method="post" action="{% url 'register' %}">
+        <table>
+            {{form}}
+        </table>
+        {% csrf_token %}
+        <input type="submit" value="Register" />
+    </form>
+{% endblock %}
