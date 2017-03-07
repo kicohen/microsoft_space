@@ -54,10 +54,31 @@ class EventForm(forms.ModelForm):
             'contact',
         )
 
+def fix_date(datetime):
+    date = datetime[:datetime.find(' ')]
+    time = datetime[datetime.find(' '):]
+    hour = time[1:time.find(":")]
+    minutes = time[4:6]
+    am = time[-2:]
+    if am == 'PM':
+        hour = str(int(hour)+12)
+    if int(minutes) < 10:
+        minutes = '0'+minutes
+    if int(hour) < 10:
+        hour = '0'+hour
+    return(date+" "+hour+":"+minutes)
+
 class EventDateForm(forms.ModelForm):
     class Meta:
         model = EventDate
         exclude = ('event_id',)
+
+    def clean_date(self):
+        start_date = self.data['start_date']
+        end_date = self.data['end_date']
+        self.data['start_date'] = fix_date(start_date)
+        self.data['end_date'] = fix_date(end_date)
+        return self.data
 
 class EventDateLocationForm(forms.ModelForm):
     class Meta:
