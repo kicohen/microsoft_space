@@ -133,8 +133,6 @@ def events(request):
         context['eventdates'] = event_dates.order_by('start_date')
         return render(request, 'msevents/events.html', context)
 
-
-
 @login_required
 @transaction.atomic
 def request_event(request):
@@ -144,9 +142,16 @@ def request_event(request):
         event_date_form = EventDateForm(request.POST)
         event_location_form = EventDateLocationForm(request.POST)
         if event_form.is_valid() and event_date_form.is_valid() and event_location_form.is_valid():
-            event_form.save()
-            event_date_form.save()
-            event_location_form.save()
+            event = event_form.save(commit=False)
+            event.contact = request.user
+            event.save()
+            event_date = event_date_form.save(commit=False)
+            event_date.event_id = event
+            event_date.save()
+            event_location = event_location_form.save(commit=False)
+            event_location.eventdate_id = event_date
+            event_location.save()
+            print("got here")
             return redirect('/')
         else: 
             print("error")
