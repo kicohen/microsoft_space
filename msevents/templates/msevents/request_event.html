@@ -1,0 +1,13 @@
+{% extends "msevents/base.html" %}
+
+{% block content %}
+
+<form method="post" enctype="multipart/form-data" action="{% url 'profile' %}">
+  {% csrf_token %}
+  {{ event_form.as_p }}
+  {{ event_date_form.as_p }}
+  {{ event_location_form.as_p }}
+  <button type="submit">Save changes</button>
+</form>
+
+{% endblock %}

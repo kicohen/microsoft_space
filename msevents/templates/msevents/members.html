@@ -1,0 +1,20 @@
+{% extends "msevents/base.html" %}
+
+{% for m in members %}
+    <div>
+    <div class="post" >
+        <a>
+            <table>
+                <tr >
+                    <td class="top">
+                        {{m.name}}
+                    </td>
+                </tr>
+                <tr class="bottom">
+                    <td>{{m.username}}</td>
+                </tr>
+            </table>
+        </a>
+    </div>
+    </div> 
+    {% endfor %}

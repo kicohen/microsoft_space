@@ -11,7 +11,7 @@ from django.core import serializers
 from django.core.mail import send_mail
 
 from .models import Profile, Location, Event, EventDate, EventDateLocation, EventRole
-from .forms import RegistrationForm
+from .forms import RegistrationForm, EventForm, EventDateForm, EventDateLocationForm
 
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -89,10 +89,9 @@ verify your email address and complete the registration of your account:
   http://%s%s
 """ % (request.get_host(), 
        reverse('confirm', args=(new_user.username, token)))
-
-    send_mail(subject="Verify your email address",
+    send_mail(subject="Verify Email Address",
               message= email_body,
-              from_email="Microsoft@cmu.edu",
+              from_email="Microsoft Space <microsoft@cmu.edu>",
               recipient_list=[new_user.email])
 
     message = "A confirmation email has been sent to " + form.cleaned_data['email'] + ". Please click the link in that email to confirm your email address and complete your registration for your address book."
@@ -112,5 +111,50 @@ def confirm_registration(request, username, token):
     user.save()
     return render(request, 'msevents/home.html', {'message': "Thank you for confirming your email address. Please login to continue."})
 
+@login_required
+def members(request):
+    if request.user.profile.account_type != 'AD':
+        return render(request, 'msevents/home.html', {'message': "You do not have rights to view this page."})
+
+    objects = User.objects.all()
+    context = createContext(request)
+    if objects.count() > 0:
+        context['members'] = objects.order_by('username')
+        return render(request, 'msevents/members.html', context)
+
+@login_required
+def events(request):
+    if request.user.profile.account_type != 'AD':
+        return render(request, 'msevents/home.html', {'message': "You do not have rights to view this page."})
+
+    event_dates = EventDate.objects.all()
+    context = createContext(request)
+    if event_dates.count() > 0:
+        context['eventdates'] = event_dates.order_by('start_date')
+        return render(request, 'msevents/events.html', context)
 
 
+
+@login_required
+@transaction.atomic
+def request_event(request):
+    context = createContext(request)
+    if request.method == 'POST':
+        event_form = EventForm(request.POST)
+        event_date_form = EventDateForm(request.POST)
+        event_location_form = EventDateLocationForm(request.POST)
+        if event_form.is_valid() and event_date_form.is_valid() and event_location_form.is_valid():
+            event_form.save()
+            event_date_form.save()
+            event_location_form.save()
+            return redirect('/')
+        else: 
+            print("error")
+    else:
+        event_form = EventForm()
+        event_date_form = EventDateForm()
+        event_location_form = EventDateLocationForm()
+    context['event_form'] = event_form
+    context['event_date_form'] = event_date_form
+    context['event_location_form'] = event_location_form
+    return render(request, 'msevents/request_event.html', context)

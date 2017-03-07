@@ -1,0 +1,30 @@
+{% extends "msevents/base.html" %}
+
+{% block content %}
+
+<table class="table table-bordered">
+		<thead style="text-align:center;">
+			<td>Date</td>
+			<td>Name</td>
+			<td>Contact</td>
+			<td>Head Count</td>
+			<td>Open To Public</td>
+			<td>Date</td>
+		</thead>
+	{% for event_date in eventdates %}
+		<tr class="{{event_date.event_id.status}}">
+			<td>{{event_date.start_date|date}}</td>
+			<td><a href="">{{event_date.event_id.name}}</a><br><i>{{event_date.event_id.organization}}</i></td>
+			<td>{{event_date.event_id.contact.first_name}}
+			{{event_date.event_id.contact.last_name}}<br>
+			{{event_date.event_id.contact.email}}</td>
+			<td>{{event_date.event_id.head_count}}</td>
+			<td>{{event_date.event_id.open_to_public}}</td>
+			<td>{{event_date.start_date}}<br>{{event_date.end_date}}</td>
+		</tr>
+	{% endfor %}
+
+
+</table>
+
+{% endblock %}

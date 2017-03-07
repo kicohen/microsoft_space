@@ -57,9 +57,9 @@ class EventForm(forms.ModelForm):
 class EventDateForm(forms.ModelForm):
     class Meta:
         model = EventDate
-        exclude = ()
+        exclude = ('event_id',)
 
 class EventDateLocationForm(forms.ModelForm):
     class Meta:
         model = EventDateLocation
-        exclude = ()
+        exclude = ('event_id','eventdate_id')

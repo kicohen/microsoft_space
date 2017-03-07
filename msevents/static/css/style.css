@@ -12,6 +12,21 @@
 	text-align: center;
 }
 
+.IR{
+	background-color: #FFF1CC;
+}
+
+.CF{
+	background-color: #DAF6A1;
+}
+.EC{
+	background-color: #BBE2F5;
+}
+.EX,.ED{
+	background-color: #FFB79B;
+}
+
+
 @media screen and (min-width: 1200px){
 	#navbar ul li a{
 		width: 130px;

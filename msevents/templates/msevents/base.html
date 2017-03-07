@@ -56,9 +56,9 @@
 				<li><a href="{% url 'calendar' %}">Calendar</a></li>
 				<li><a href="#">About</a></li>
 				<li><a href="{% url 'spaces' %}">Spaces</a></li>
-				<li><a href="#">Request Event</a></li>
+				<li><a href="{% url 'request_event' %}">Request Event</a></li>
 				{% if account_type == "AD" %}
-				<li><a href="#">Members</a></li>
+				<li><a href="{% url 'events' %}">Admin</a></li>
 				{% endif%}
           </ul>
           <ul class="nav navbar-nav navbar-right">
