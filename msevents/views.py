@@ -155,7 +155,8 @@ def request_event(request):
             event_location = event_location_form.save(commit=False)
             event_location.eventdate_id = event_date
             event_location.save()
-            return redirect('/')
+            context['message']="Successfully requsted event."
+            return render(request, 'msevents/calendar.html', context)
         else: 
             print("error")
     else:
@@ -165,4 +166,20 @@ def request_event(request):
     context['event_form'] = event_form
     context['event_date_form'] = event_date_form
     context['event_location_form'] = event_location_form
+    return render(request, 'msevents/request_event.html', context)
+
+def show_event(request):
+    eid = request.GET.get('id', '')
+    event = get_object_or_404(Event, pk=eid)
+    context = createContext(request)
+    context['event'] = event
+    context['event_dates'] = EventDate.objects.filter(event_id=event)
+    return render(request, 'msevents/event_details.html', context)
+
+@login_required
+def edit_event(request):
+    eid = request.GET.get('id', '')
+    event = get_object_or_404(Event, pk=eid)
+    context = createContext(request)
+    context['event'] = event
     return render(request, 'msevents/request_event.html', context)

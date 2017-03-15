@@ -2,6 +2,7 @@ from django import forms
 
 from django.contrib.auth.models import User
 from .models import *
+from django.utils.translation import ugettext_lazy as _
 
 class RegistrationForm(forms.Form):
     first_name = forms.CharField(max_length=20)
@@ -68,6 +69,10 @@ def fix_date(datetime):
         hour = '0'+hour
     return(date+" "+hour+":"+minutes)
 
+class CustomLocationChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+         return obj.get_full_name()
+
 class EventDateForm(forms.ModelForm):
     class Meta:
         model = EventDate
@@ -81,6 +86,8 @@ class EventDateForm(forms.ModelForm):
         return self.data
 
 class EventDateLocationForm(forms.ModelForm):
+    location_id = CustomLocationChoiceField(queryset=Location.objects.all(), label="Location")
+
     class Meta:
         model = EventDateLocation
         exclude = ('event_id','eventdate_id')

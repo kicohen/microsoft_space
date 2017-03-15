@@ -40,6 +40,12 @@ class Location(models.Model):
 	room = models.CharField(max_length=160)
 	details = models.TextField(max_length=600, blank=True)
 
+	def __unicode__(self):
+		return self.room
+
+	def get_full_name(self):
+		return self.room
+
 class Event(models.Model):
 	name = models.CharField(max_length=160)
 	organization = models.CharField(max_length=160)
@@ -58,6 +64,14 @@ class Event(models.Model):
 		(EVENT_COMPLETED, 'Event Completed')
 	)
 
+	EVENT_STATUS_LOOKUP = {
+		'IR':'Initial Request',
+		'CF':'Event Confirmed',
+		'EC':'Event Declined',
+		'EX':'Event Canceled',
+		'ED':'Event Completed'
+	}
+
 	status = models.CharField(
         max_length=2,
         choices=EVENT_STATUS_TYPES,
@@ -67,6 +81,9 @@ class Event(models.Model):
 	head_count = models.IntegerField(blank=True)
 	open_to_public = models.BooleanField()
 	notes = models.TextField(max_length=1000, blank=True)
+
+	def __unicode__(self):
+		return self.name
 
 class EventDate(models.Model):
 	event_id = models.ForeignKey(Event)

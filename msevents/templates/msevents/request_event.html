@@ -19,7 +19,11 @@
         {{ field.errors }}
         <label class="col-sm-2 col-form-label">{{ field.label }}</label> 
         <div class="col-sm-10">
-        	{{field|add_class:"form-control"}}
+          {% if field.auto_id == "id_open_to_public" %}
+            {{field}}
+          {% else %}
+        	  {{field|add_class:"form-control"}}
+          {% endif %}
         </div>
     </div>
   {% endfor %}

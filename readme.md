@@ -31,3 +31,7 @@ You will also need to create your own config.ini file in the main directory of t
 * Edit and View User Profile
 * Event Roles
 * Event Locations
+* Messages on events (When creating an event there should be a "Event request successfully submitted." message.)
+
+### Bugs:
+* Location on event date on event details pages
