@@ -20,6 +20,13 @@ class Profile(models.Model):
 		(GATE_KEEPER, 'Gate Keeper'),
 		(ADMIN, 'Administrator')
 	)
+
+	ACCOUNT_TYPE_LOOKUP = {
+		'EO':'Event Organizer',
+		'GK':'Gate Keeper',
+		'AD':'Administrator'
+	}
+
 	account_type = models.CharField(
         max_length=2,
         choices=ACCOUNT_TYPES,
@@ -48,7 +55,7 @@ class Location(models.Model):
 
 class Event(models.Model):
 	name = models.CharField(max_length=160)
-	organization = models.CharField(max_length=160)
+	organization = models.CharField(max_length=160, blank=True, null=True)
 
 	INITIAL_REQUEST = 'IR'
 	EVENT_CONFIRMED = 'CF'

@@ -1,0 +1,35 @@
+{% extends "msevents/base.html" %}
+
+{% block content %}
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">User Info</div>
+  <ul class="list-group">
+    <li class="list-group-item">First Name: {{ user.first_name }}</li>
+    <li class="list-group-item">Last Name: {{ user.last_name }}</li>
+    <li class="list-group-item">Email: {{ user.email }}</li>
+    <li class="list-group-item">Username: {{ user.username }}</li>
+  </ul>
+</div>
+<div class="panel panel-default">
+  <!-- Table -->
+  <table class="table table-striped">
+    <thead>
+    	<tr>
+    		<th>Event Name</th>
+    		<th>Event Organization</th>
+    		<th>Event Status</th>
+    	</tr>
+    </thead>
+		{% for event in events %}
+		<tr>
+			<td>{{event.name}}</td>
+			<td>{{event.organization}}</td>
+			<td>{{event.status}}</td>
+		</tr>
+		{% endfor %}
+  </table>
+</div>
+
+   
+{% endblock %}

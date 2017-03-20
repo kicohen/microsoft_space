@@ -1,0 +1,17 @@
+html, body{
+	background-color: #1E1F1F;
+}
+
+#main{
+	text-align: center;
+}
+
+#logo{
+	width: 50%;
+	min-width: 250px;
+	margin-top: 25px;
+}
+
+nav{
+	border-bottom: 2px solid white !important;
+}

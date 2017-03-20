@@ -21,6 +21,7 @@
         <div class="col-sm-10">
           {% if field.auto_id == "id_open_to_public" %}
             {{field}}
+            <span style="color: darkgray">&nbsp;If the event is for personal use of the space, leave this box unchecked.</span>
           {% else %}
         	  {{field|add_class:"form-control"}}
           {% endif %}

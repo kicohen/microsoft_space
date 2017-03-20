@@ -26,6 +26,10 @@
 	background-color: #FFB79B;
 }
 
+.navbar-inverse{
+	background-color: #1E1F1F;
+}
+
 
 @media screen and (min-width: 1200px){
 	#navbar ul li a{

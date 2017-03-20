@@ -1,33 +1,13 @@
 {% extends "msevents/base.html" %}
 
-{% block content %}
-  <div class="container">
-      <div class="jumbotron">
-        <h1>The Microsoft Space @ CMU</h1>
-        <p>Pittsburgh is changing: it's now known as the Seattle of the East. Large tech companies are invading Pittsburgh and CMU's backyard. Google, Disney, Boeing, and Facebook are all in the area and all competing for the top talent at CMU. CMU yields the most hires per any University in the world for Microsoft. In 2016 alone we have 58 summer interns from CMU, 70 percent of which are Full-time eligible. Our technology (Kinect) is used in all entry level CS classes. However, with big competitors coming to Pittsburgh, we have to get creative with our imprint on the campus.</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more »</a></p>
-      </div>
- </div>
+{% block js %}
+    {{ block.super }} {# includes previous content in block #}
+    {% load staticfiles %}
+    <link href="{% static 'css/home.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
 
-  <div class="container">
-      <!-- Example row of columns -->
-      <div class="row">
-        <div class="col-md-4">
-          <h2>Events</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-default" href="#" role="button">View  Events &raquo;</a></p>
-        </div>
-        <div class="col-md-4">
-          <h2>Spaces</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-default" href="#" role="button">View Spaces &raquo;</a></p>
-       </div>
-        <div class="col-md-4">
-          <h2>Calendar</h2>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-          <p><a class="btn btn-default" href="#" role="button">View Calendar &raquo;</a></p>
-        </div>
-      </div>
-  </div>
-   
+{% block content %}
+<div id="main">
+   <img id='logo' src="{% static 'img/space_logo.png' %}">
+</div>
 {% endblock %}

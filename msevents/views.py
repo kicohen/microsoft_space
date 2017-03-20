@@ -20,39 +20,62 @@ from datetime import datetime
 # Create your views here.
 
 def createContext(request):
-	if str(request.user) != 'AnonymousUser':
-		logged_in = True
-		account_type = request.user.profile.account_type
-	else:
-		logged_in = False
-		account_type = "Guest"
-	context = { 'account_type': account_type, 'logged_in':logged_in}
-	return context
+    if str(request.user) != 'AnonymousUser':
+        logged_in = True
+        account_type = request.user.profile.account_type
+    else:
+        logged_in = False
+        account_type = "Guest"
+    context = { 'account_type': account_type, 'logged_in':logged_in}
+    return context
 
 def home(request):
-	context = createContext(request)
-	return render(request, 'msevents/home.html', context)
+    context = createContext(request)
+    return render(request, 'msevents/home.html', context)
 
+def about(request):
+    context = createContext(request)
+    return render(request, 'msevents/about.html', context)
+
+@login_required
 def profile(request):
-	context = createContext(request)
-	return render(request, 'msevents/home.html', context)
+    context = createContext(request)
+    events = Event.objects.filter(contact=request.user)
+    context['events'] = events
+    context['user'] = request.user
+    return render(request, 'msevents/profile.html', context)
+
+@login_required
+def user(request):
+    context = createContext(request)
+    uid = request.GET.get('id', '')
+    if uid == "":
+        context['message'] = 'User not found'
+        return render(request, 'msevents/home.html', context)
+    else:
+        context = createContext(request)
+        user = get_object_or_404(User, pk=uid)
+        events = Event.objects.filter(contact=user)
+        context['events'] = events
+        context['user'] = user
+        return render(request, 'msevents/profile.html', context)
 
 def spaces(request):
-	context = createContext(request)
-	return render(request, 'msevents/spaces.html', context)
+    context = createContext(request)
+    return render(request, 'msevents/spaces.html', context)
 
 def calendar(request):
-	context = createContext(request)
-	events = []
-	for date in EventDate.objects.all():
-		event_data = dict()
-		event_data['title'] = date.event_id.name
-		event_data['startsAt'] = str(date.start_date)
-		event_data['endsAt'] = str(date.end_date)
-		event_data['color'] = {'primary':'#7FBA00', 'secondary':'#ddd'}
-		events.append(event_data)
-	context['events'] = str(events)
-	return render(request, 'msevents/calendar.html', context)
+    context = createContext(request)
+    events = []
+    for date in EventDate.objects.all():
+        event_data = dict()
+        event_data['title'] = date.event_id.name
+        event_data['startsAt'] = str(date.start_date)
+        event_data['endsAt'] = str(date.end_date)
+        event_data['color'] = {'primary':'#7FBA00', 'secondary':'#ddd'}
+        events.append(event_data)
+    context['events'] = str(events)
+    return render(request, 'msevents/calendar.html', context)
 
 @transaction.atomic
 def register(request):
@@ -118,8 +141,10 @@ def members(request):
 
     objects = User.objects.all()
     context = createContext(request)
+    print(objects)
     if objects.count() > 0:
         context['members'] = objects.order_by('username')
+        print('Here')
         return render(request, 'msevents/members.html', context)
 
 @login_required
