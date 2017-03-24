@@ -68,12 +68,13 @@ def calendar(request):
     context = createContext(request)
     events = []
     for date in EventDate.objects.all():
-        event_data = dict()
-        event_data['title'] = date.event_id.name
-        event_data['startsAt'] = str(date.start_date)
-        event_data['endsAt'] = str(date.end_date)
-        event_data['color'] = {'primary':'#7FBA00', 'secondary':'#ddd'}
-        events.append(event_data)
+        if date.event_id.status == 'CF' and date.event_id.open_to_public:
+            event_data = dict()
+            event_data['title'] = date.event_id.name
+            event_data['startsAt'] = str(date.start_date)
+            event_data['endsAt'] = str(date.end_date)
+            event_data['color'] = {'primary':'#7FBA00', 'secondary':'#ddd'}
+            events.append(event_data)
     context['events'] = str(events)
     return render(request, 'msevents/calendar.html', context)
 
@@ -152,11 +153,26 @@ def events(request):
     if request.user.profile.account_type != 'AD':
         return render(request, 'msevents/home.html', {'message': "You do not have rights to view this page."})
 
-    event_dates = EventDate.objects.all()
+    event_dates = EventDate.objects.filter(start_date__gte=datetime.now())
     context = createContext(request)
     if event_dates.count() > 0:
         context['eventdates'] = event_dates.order_by('start_date')
         return render(request, 'msevents/events.html', context)
+    context['message'] = "No events found."
+    return render(request, 'msevents/events.html', context)
+
+@login_required
+def past_events(request):
+    if request.user.profile.account_type != 'AD':
+        return render(request, 'msevents/home.html', {'message': "You do not have rights to view this page."})
+
+    event_dates = EventDate.objects.filter(start_date__lte=datetime.now())
+    context = createContext(request)
+    if event_dates.count() > 0:
+        context['eventdates'] = event_dates.order_by('start_date')
+        return render(request, 'msevents/events.html', context)
+    context['message'] = "No events found."
+    return render(request, 'msevents/events.html', context)
 
 def clean_date(date):
     date=date.replace("-",'')
@@ -207,4 +223,11 @@ def edit_event(request):
     event = get_object_or_404(Event, pk=eid)
     context = createContext(request)
     context['event'] = event
-    return render(request, 'msevents/request_event.html', context)
+    context['event_dates'] = EventDate.objects.filter(event_id=event)
+    event_form = EventForm(instance=event)
+    event_date_form = EventDateForm()
+    event_location_form = EventDateLocationForm()
+    context['event_form'] = event_form
+    context['event_date_form'] = event_date_form
+    context['event_location_form'] = event_location_form
+    return render(request, 'msevents/event_update.html', context)
