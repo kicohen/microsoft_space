@@ -19,11 +19,11 @@ angular.module('mwl.calendar.docs', ['mwl.calendar', 'ngAnimate', 'ui.bootstrap'
     };
 
     vm.eventClicked = function(event) {
-      console.log('event_clicked')
+      window.open (event.link,'_self',false);
     };
 
     vm.eventEdited = function(event) {
-      console.log('event edited')
+      window.open (event.link,'_self',false)
     };
 
     vm.eventDeleted = function(event) {

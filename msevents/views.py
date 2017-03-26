@@ -74,7 +74,7 @@ def calendar(request):
             event_data['startsAt'] = str(date.start_date)
             event_data['endsAt'] = str(date.end_date)
             event_data['color'] = {'primary':'#7FBA00', 'secondary':'#ddd'}
-            event_data['link'] = date.event_id.pk
+            event_data['link'] = "%s?id=%s" % (reverse("show_event"), str(date.event_id.pk))
             events.append(event_data)
     context['events'] = str(events)
     return render(request, 'msevents/calendar.html', context)
