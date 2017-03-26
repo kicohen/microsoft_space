@@ -12,7 +12,7 @@
 
 {% block content %}
 
-<form method="post" enctype="multipart/form-data" action="{% url 'request_event' %}">
+<form method="post" enctype="multipart/form-data" action="?id={{event.id}}">
   {% csrf_token %}
   {% for field in event_form.visible_fields %}
     <div class="form-group row">
@@ -29,32 +29,32 @@
     </div>
   {% endfor %}
   {% for field in event_date_form.visible_fields %}
-    <div class="form-group row">
-        {{ field.errors }}
-        <label class="col-sm-2 col-form-label">{{ field.label }}</label> 
-    		<div class="container">
-        <div class="row">
-            <div class='col-sm-6'>
-                <div class="form-group">
-                    <div class='input-group date' id="{{ field.auto_id }}_cal">
-                        <input type='text' class="form-control" name="{{ field.html_name }}" id="{{ field.auto_id }}" />
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <script type="text/javascript">
-                $(function () {
-                    $('#{{ field.auto_id }}_cal').datetimepicker({
-                      sideBySide: true
-                    });
-                });
-            </script>
-        </div>
-        </div>
-      </div>
-  {% endfor %}
+	    <div class="form-group row">
+	        {{ field.errors }}
+	        <label class="col-sm-2 col-form-label">{{ field.label }}</label> 
+	    		<div class="container">
+	        <div class="row">
+	            <div class='col-sm-6'>
+	                <div class="form-group">
+	                    <div class='input-group date' id="{{ field.auto_id }}_cal">
+	                        <input type='text' class="form-control" name="{{ field.html_name }}" id="{{ field.auto_id }}" value="{{ field.value|date:'m/d/Y h:m A'|default_if_none:'' }}"/>
+	                        <span class="input-group-addon">
+	                            <span class="glyphicon glyphicon-calendar"></span>
+	                        </span>
+	                    </div>
+	                </div>
+	            </div>
+	            <script type="text/javascript">
+	                $(function () {
+	                    $('#{{ field.auto_id }}_cal').datetimepicker({
+	                      sideBySide: true,
+	                    });
+	                });
+	            </script>
+	        </div>
+	        </div>
+	      </div>
+	  {% endfor %}
     {% for field in event_location_form.visible_fields %}
     <div class="form-group row">
         {{ field.errors }}
@@ -64,7 +64,7 @@
         </div>
     </div>
   {% endfor %}
-  <input type="submit" value="Request Event" class="btn btn-lg btn-primary btn-block" />
+  <input type="submit" value="Update Event" class="btn btn-lg btn-primary btn-block" />
 </form>
 
 {% endblock %}

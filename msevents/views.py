@@ -11,7 +11,7 @@ from django.core import serializers
 from django.core.mail import send_mail
 
 from .models import Profile, Location, Event, EventDate, EventDateLocation, EventRole
-from .forms import RegistrationForm, EventForm, EventDateForm, EventDateLocationForm
+from .forms import *
 
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -74,6 +74,7 @@ def calendar(request):
             event_data['startsAt'] = str(date.start_date)
             event_data['endsAt'] = str(date.end_date)
             event_data['color'] = {'primary':'#7FBA00', 'secondary':'#ddd'}
+            event_data['link'] = date.event_id.pk
             events.append(event_data)
     context['events'] = str(events)
     return render(request, 'msevents/calendar.html', context)
@@ -196,8 +197,8 @@ def request_event(request):
             event_location = event_location_form.save(commit=False)
             event_location.eventdate_id = event_date
             event_location.save()
-            context['message']="Successfully requsted event."
-            return render(request, 'msevents/calendar.html', context)
+            context['message']="Successfully requested event."
+            return render(request, 'msevents/home.html', context)
         else: 
             print("error")
     else:
@@ -217,16 +218,51 @@ def show_event(request):
     context['event_dates'] = EventDate.objects.filter(event_id=event)
     return render(request, 'msevents/event_details.html', context)
 
+def combine(*args):
+    new_list = []
+    for arg in args:
+        if type(arg) == list:
+            new_list.extend(arg)
+        else:
+            new_list.append(arg)
+    return new_list
+
+def forms_are_valid(forms):
+    for form in forms:
+        if not form.is_valid():
+            return False
+    return True
+
+def save_forms(forms):
+    for form in forms:
+        form.save()
+
 @login_required
 def edit_event(request):
     eid = request.GET.get('id', '')
     event = get_object_or_404(Event, pk=eid)
     context = createContext(request)
     context['event'] = event
-    context['event_dates'] = EventDate.objects.filter(event_id=event)
-    event_form = EventForm(instance=event)
-    event_date_form = EventDateForm()
-    event_location_form = EventDateLocationForm()
+    event_date = get_object_or_404(EventDate, event_id=event)
+    event_location = get_object_or_404(EventDateLocation, eventdate_id=event_date)
+    if request.method == 'POST':
+        if request.user.profile.account_type == 'AD':
+            event_form = EventAdminForm(request.POST, instance=event)
+        else:
+            event_form = EventForm(request.POST, instance=event)
+        event_date_form = EventDateForm(request.POST, instance=event_date)
+        event_location_form = EventDateLocationForm(request.POST, instance=event_location)
+        event_date_form.clean_date()
+        if forms_are_valid([event_date_form, event_form, event_location_form]):
+            save_forms([event_date_form, event_form, event_location_form])
+            context['message']="Successfully updated event."
+            return render(request, 'msevents/home.html', context)
+    if request.user.profile.account_type == 'AD':
+        event_form = EventAdminForm(instance=event)
+    else:
+        event_form = EventForm(instance=event)
+    event_date_form = EventDateForm(instance=event_date)
+    event_location_form = EventDateLocationForm(instance=event_location)
     context['event_form'] = event_form
     context['event_date_form'] = event_date_form
     context['event_location_form'] = event_location_form

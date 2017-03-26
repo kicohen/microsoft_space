@@ -55,6 +55,13 @@ class EventForm(forms.ModelForm):
             'contact',
         )
 
+class EventAdminForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        exclude = (
+            'contact',
+        )
+
 def fix_date(datetime):
     date = datetime[:datetime.find(' ')]
     time = datetime[datetime.find(' '):]
