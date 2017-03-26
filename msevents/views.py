@@ -267,3 +267,56 @@ def edit_event(request):
     context['event_date_form'] = event_date_form
     context['event_location_form'] = event_location_form
     return render(request, 'msevents/event_update.html', context)
+
+@login_required
+def locations(request, message=""):
+    if request.user.profile.account_type != 'AD':
+        return render(request, 'msevents/home.html', {'message': "You do not have rights to view this page."})
+
+    context = createContext(request)
+    context['message'] = message
+    context['locations'] = Location.objects.all()
+    return render(request, 'msevents/locations.html', context)
+
+@login_required
+def location(request):
+    if request.user.profile.account_type != 'AD':
+        return render(request, 'msevents/home.html', {'message': "You do not have rights to view this page."})
+
+    context = createContext(request)
+
+    if request.method == 'POST':
+        form = LocationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return locations(request)
+    
+    context['form'] = LocationForm()
+    return render(request, 'msevents/location.html', context)
+
+def edit_location(request):
+    if request.user.profile.account_type != 'AD':
+        return render(request, 'msevents/home.html', {'message': "You do not have rights to view this page."})
+
+    location_id = request.GET.get('id', '')
+    location = get_object_or_404(Location, pk=location_id)
+    context = createContext(request)
+    context['edit'] = True
+    context['location'] = location
+
+    if request.method == 'POST':
+        form = LocationForm(request.POST, instance=location)
+        if form.is_valid():
+            form.save()
+            return locations(request)
+    
+    context['form'] = LocationForm(instance=location)
+    return render(request, 'msevents/location.html', context)
+
+@login_required
+def delete_location(request):
+    location_id = request.GET.get('id', '')
+    location = get_object_or_404(Location, pk=location_id)
+    name = location.room
+    location.delete()
+    return locations(request, "Successfully deleted location "+name)

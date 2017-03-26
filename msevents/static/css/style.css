@@ -30,6 +30,14 @@
 	background-color: #1E1F1F;
 }
 
+.glyphicon-danger{
+	color: #f65314;
+}
+
+.glyphicon-danger:hover{
+	color: #9B2C00;
+}
+
 
 @media screen and (min-width: 1200px){
 	#navbar ul li a{

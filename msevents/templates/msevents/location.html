@@ -1,0 +1,34 @@
+{% extends "msevents/base.html" %}
+
+{% block content %}
+<div class="">
+    {% if edit %}
+    <h3>Edit Location</h3>
+    <form method="post" action="?id={{location.pk}}">
+    {% else %}
+    <h3>Add new location</h3>
+    <form method="post" action="{% url 'location' %}">
+    {% endif %}
+    {% for hidden in form.hidden_fields %}
+    {{ hidden }}
+    {% endfor %}
+    {% for field in form.visible_fields %}
+    <div class="form-group">
+        {{ field.errors }}
+        {{ field.label_tag }} 
+        {% if edit %}
+         <input id="{{ field.auto_id }}" type="{% if 'password' in field.auto_id %}Password{% else %}Text{% endif %}" name="{{ field.html_name }}" value="{{field.value}}" class="form-control">
+        {% else %}
+         <input id="{{ field.auto_id }}" type="{% if 'password' in field.auto_id %}Password{% else %}Text{% endif %}" name="{{ field.html_name }}" class="form-control">
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% csrf_token %}
+    {% if edit %}
+    <input type="submit" value="Update Location" class="btn btn-lg btn-primary btn-block" />
+    {% else %}
+    <input type="submit" value="Add Location" class="btn btn-lg btn-primary btn-block" />
+    {% endif %}
+    </form>
+</div>
+{% endblock %}

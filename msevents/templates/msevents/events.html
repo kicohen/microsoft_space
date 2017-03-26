@@ -4,8 +4,9 @@
 
 <div class="row" style="text-align: right">
 <div class="button-group">
-	<button class="btn btn-primary"><a href="{% url 'members' %}" style="color: white">Members</a></button>
-	<button class="btn btn-primary"><a href="{% url 'past_events' %}" style="color: white">Past Events</a></button>
+	<a href="{% url 'members' %}" class="btn btn-primary" style="color: white">Members</a>
+	<a href="{% url 'locations' %}" class="btn btn-primary" style="color: white">Locations</a>
+	<a href="{% url 'past_events' %}" class="btn btn-primary" style="color: white">Past Events</a>
 </div>
 <br>
 </div>
@@ -31,8 +32,6 @@
 			<td>{{event_date.start_date}}<br>{{event_date.end_date}}</td>
 		</tr>
 	{% endfor %}
-
-
 </table>
 </div>
 {% endblock %}

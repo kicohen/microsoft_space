@@ -47,6 +47,11 @@ class RegistrationForm(forms.Form):
         # dictionary
         return username
 
+class LocationForm(forms.ModelForm):
+    class Meta:
+        model = Location
+        exclude = ()
+
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
