@@ -9,6 +9,7 @@
     <th>Last Name</th>
     <th>Account Type</th>
     <th>Email</th>
+    <th>Actions</th>
 </thead>
 {% for m in members %}
 <tr>
@@ -17,6 +18,7 @@
     <td>{{ m.last_name}}</td>
     <td>{{ m.profile.ACCOUNT_TYPE_LOOKUP|get_item:m.profile.account_type }}</td>
     <td>{{ m.email }}</td>
+    <td><a href="user/edit/?id={{m.pk}}"><span class="glyphicon glyphicon-edit"></span></a></td>
 </tr>
 {% endfor %}
 </table>

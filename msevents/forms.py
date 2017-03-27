@@ -67,6 +67,17 @@ class EventAdminForm(forms.ModelForm):
             'contact',
         )
 
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email')
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('account_type',)
+
+
 def fix_date(datetime):
     date = datetime[:datetime.find(' ')]
     time = datetime[datetime.find(' '):]

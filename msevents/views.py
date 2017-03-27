@@ -165,16 +165,40 @@ def confirm_registration(request, username, token):
     return render(request, 'msevents/home.html', {'message': "Thank you for confirming your email address. Please login to continue."})
 
 @login_required
-def members(request):
+def members(request, message = ""):
     if not is_admin(request):
         return admin_only(request)
 
     objects = User.objects.all()
     context = createContext(request)
-    print(objects)
+    context["message"] = message
+
     if objects.count() > 0:
         context['members'] = objects.order_by('username')
         return render(request, 'msevents/members.html', context)
+
+@login_required
+def edit_user(request):
+    if not is_admin(request):
+        return admin_only(request)
+
+    user_id = request.GET.get('id', '')
+    user = get_object_or_404(User, pk=user_id)
+    profile = user.profile
+    context = createContext(request)
+    context["user"] = user
+
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=user)
+        profile_form = ProfileForm(request.POST, instance=profile)
+
+        if forms_are_valid([user_form, profile_form]):
+            save_forms([user_form, profile_form])
+            return members(request, "Successfully edited user " + user.first_name + " " + user.last_name)
+    
+    context['user_form'] = UserForm(instance=user)
+    context['profile_form'] = ProfileForm(instance=profile)
+    return render(request, 'msevents/user_edit.html', context)
 
 ################################################################
 #                         Event Pages                          #
@@ -255,8 +279,7 @@ def request_event(request):
 
 def show_event(request):  
     eid = request.GET.get('id', '')
-    if type(eid) != int:
-        return home(request)
+
     event = get_object_or_404(Event, pk=eid)
     context = createContext(request)
     context['event'] = event
@@ -266,8 +289,7 @@ def show_event(request):
 @login_required
 def edit_event(request):
     eid = request.GET.get('id', '')
-    if type(eid) != int:
-        return home(request)
+
     event = get_object_or_404(Event, pk=eid)
     context = createContext(request)
     context['event'] = event
@@ -341,7 +363,7 @@ def edit_location(request):
         form = LocationForm(request.POST, instance=location)
         if form.is_valid():
             form.save()
-            return locations(request, "Successfully edited location "+location.room)
+            return locations(request, "Successfully edited location "+ location.room)
     
     context['form'] = LocationForm(instance=location)
     return render(request, 'msevents/location.html', context)
