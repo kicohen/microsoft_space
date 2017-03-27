@@ -10,14 +10,33 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core import serializers
 from django.core.mail import send_mail
 
-from .models import Profile, Location, Event, EventDate, EventDateLocation, EventRole
+from .models import *
 from .forms import *
 
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 
 from datetime import datetime
-# Create your views here.
+
+################################################################
+#                         Static Pages                         #
+################################################################
+
+def home(request):
+    context = createContext(request)
+    return render(request, 'msevents/home.html', context)
+
+def about(request):
+    context = createContext(request)
+    return render(request, 'msevents/about.html', context)
+
+def spaces(request):
+    context = createContext(request)
+    return render(request, 'msevents/spaces.html', context)
+
+################################################################
+#                       Helper Functions                       #
+################################################################
 
 def createContext(request):
     if str(request.user) != 'AnonymousUser':
@@ -29,13 +48,41 @@ def createContext(request):
     context = { 'account_type': account_type, 'logged_in':logged_in}
     return context
 
-def home(request):
+def clean_date(date):
+    date=date.replace("-",'')
+
+def combine(*args):
+    new_list = []
+    for arg in args:
+        if type(arg) == list:
+            new_list.extend(arg)
+        else:
+            new_list.append(arg)
+    return new_list
+
+def forms_are_valid(forms):
+    for form in forms:
+        if not form.is_valid():
+            return False
+    return True
+
+def save_forms(forms):
+    for form in forms:
+        form.save()
+
+def is_admin(request):
+    if request.user.profile.account_type == 'AD':
+        return True
+    return False
+
+def admin_only(request):
     context = createContext(request)
+    context['message'] = "You do not have rights to view this page."
     return render(request, 'msevents/home.html', context)
 
-def about(request):
-    context = createContext(request)
-    return render(request, 'msevents/about.html', context)
+################################################################
+#                          User Pages                          #
+################################################################
 
 @login_required
 def profile(request):
@@ -59,25 +106,6 @@ def user(request):
         context['events'] = events
         context['user'] = user
         return render(request, 'msevents/profile.html', context)
-
-def spaces(request):
-    context = createContext(request)
-    return render(request, 'msevents/spaces.html', context)
-
-def calendar(request):
-    context = createContext(request)
-    events = []
-    for date in EventDate.objects.all():
-        if date.event_id.status == 'CF' and date.event_id.open_to_public:
-            event_data = dict()
-            event_data['title'] = date.event_id.name
-            event_data['startsAt'] = str(date.start_date)
-            event_data['endsAt'] = str(date.end_date)
-            event_data['color'] = {'primary':'#7FBA00', 'secondary':'#ddd'}
-            event_data['link'] = "%s?id=%s" % (reverse("show_event"), str(date.event_id.pk))
-            events.append(event_data)
-    context['events'] = str(events)
-    return render(request, 'msevents/calendar.html', context)
 
 @transaction.atomic
 def register(request):
@@ -138,21 +166,39 @@ def confirm_registration(request, username, token):
 
 @login_required
 def members(request):
-    if request.user.profile.account_type != 'AD':
-        return render(request, 'msevents/home.html', {'message': "You do not have rights to view this page."})
+    if not is_admin(request):
+        return admin_only(request)
 
     objects = User.objects.all()
     context = createContext(request)
     print(objects)
     if objects.count() > 0:
         context['members'] = objects.order_by('username')
-        print('Here')
         return render(request, 'msevents/members.html', context)
+
+################################################################
+#                         Event Pages                          #
+################################################################
+
+def calendar(request):
+    context = createContext(request)
+    events = []
+    for date in EventDate.objects.all():
+        if date.event_id.status == 'CF' and date.event_id.open_to_public:
+            event_data = dict()
+            event_data['title'] = date.event_id.name
+            event_data['startsAt'] = str(date.start_date)
+            event_data['endsAt'] = str(date.end_date)
+            event_data['color'] = {'primary':'#7FBA00', 'secondary':'#ddd'}
+            event_data['link'] = "%s?id=%s" % (reverse("show_event"), str(date.event_id.pk))
+            events.append(event_data)
+    context['events'] = str(events)
+    return render(request, 'msevents/calendar.html', context)
 
 @login_required
 def events(request):
-    if request.user.profile.account_type != 'AD':
-        return render(request, 'msevents/home.html', {'message': "You do not have rights to view this page."})
+    if not is_admin(request):
+        return admin_only(request)
 
     event_dates = EventDate.objects.filter(start_date__gte=datetime.now())
     context = createContext(request)
@@ -164,8 +210,8 @@ def events(request):
 
 @login_required
 def past_events(request):
-    if request.user.profile.account_type != 'AD':
-        return render(request, 'msevents/home.html', {'message': "You do not have rights to view this page."})
+    if not is_admin(request):
+        return admin_only(request)
 
     event_dates = EventDate.objects.filter(start_date__lte=datetime.now())
     context = createContext(request)
@@ -174,9 +220,6 @@ def past_events(request):
         return render(request, 'msevents/events.html', context)
     context['message'] = "No events found."
     return render(request, 'msevents/events.html', context)
-
-def clean_date(date):
-    date=date.replace("-",'')
 
 @login_required
 @transaction.atomic
@@ -210,43 +253,28 @@ def request_event(request):
     context['event_location_form'] = event_location_form
     return render(request, 'msevents/request_event.html', context)
 
-def show_event(request):
+def show_event(request):  
     eid = request.GET.get('id', '')
+    if type(eid) != int:
+        return home(request)
     event = get_object_or_404(Event, pk=eid)
     context = createContext(request)
     context['event'] = event
     context['event_dates'] = EventDate.objects.filter(event_id=event)
     return render(request, 'msevents/event_details.html', context)
 
-def combine(*args):
-    new_list = []
-    for arg in args:
-        if type(arg) == list:
-            new_list.extend(arg)
-        else:
-            new_list.append(arg)
-    return new_list
-
-def forms_are_valid(forms):
-    for form in forms:
-        if not form.is_valid():
-            return False
-    return True
-
-def save_forms(forms):
-    for form in forms:
-        form.save()
-
 @login_required
 def edit_event(request):
     eid = request.GET.get('id', '')
+    if type(eid) != int:
+        return home(request)
     event = get_object_or_404(Event, pk=eid)
     context = createContext(request)
     context['event'] = event
     event_date = get_object_or_404(EventDate, event_id=event)
     event_location = get_object_or_404(EventDateLocation, eventdate_id=event_date)
     if request.method == 'POST':
-        if request.user.profile.account_type == 'AD':
+        if is_admin(request):
             event_form = EventAdminForm(request.POST, instance=event)
         else:
             event_form = EventForm(request.POST, instance=event)
@@ -257,7 +285,7 @@ def edit_event(request):
             save_forms([event_date_form, event_form, event_location_form])
             context['message']="Successfully updated event."
             return render(request, 'msevents/home.html', context)
-    if request.user.profile.account_type == 'AD':
+    if is_admin(request):
         event_form = EventAdminForm(instance=event)
     else:
         event_form = EventForm(instance=event)
@@ -268,10 +296,14 @@ def edit_event(request):
     context['event_location_form'] = event_location_form
     return render(request, 'msevents/event_update.html', context)
 
+################################################################
+#                       Location Pages                         #
+################################################################
+
 @login_required
 def locations(request, message=""):
-    if request.user.profile.account_type != 'AD':
-        return render(request, 'msevents/home.html', {'message': "You do not have rights to view this page."})
+    if not is_admin(request):
+        return admin_only(request)
 
     context = createContext(request)
     context['message'] = message
@@ -280,8 +312,8 @@ def locations(request, message=""):
 
 @login_required
 def location(request):
-    if request.user.profile.account_type != 'AD':
-        return render(request, 'msevents/home.html', {'message': "You do not have rights to view this page."})
+    if not is_admin(request):
+        return admin_only(request)
 
     context = createContext(request)
 
@@ -294,9 +326,10 @@ def location(request):
     context['form'] = LocationForm()
     return render(request, 'msevents/location.html', context)
 
+@login_required
 def edit_location(request):
-    if request.user.profile.account_type != 'AD':
-        return render(request, 'msevents/home.html', {'message': "You do not have rights to view this page."})
+    if not is_admin(request):
+        return admin_only(request)
 
     location_id = request.GET.get('id', '')
     location = get_object_or_404(Location, pk=location_id)
@@ -308,7 +341,7 @@ def edit_location(request):
         form = LocationForm(request.POST, instance=location)
         if form.is_valid():
             form.save()
-            return locations(request)
+            return locations(request, "Successfully edited location "+location.room)
     
     context['form'] = LocationForm(instance=location)
     return render(request, 'msevents/location.html', context)
