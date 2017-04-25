@@ -28,6 +28,7 @@
         </div>
     </div>
   {% endfor %}
+
   {% for field in event_date_form.visible_fields %}
 	    <div class="form-group row">
 	        {{ field.errors }}
@@ -55,6 +56,7 @@
 	        </div>
 	      </div>
 	  {% endfor %}
+
     {% for field in event_location_form.visible_fields %}
     <div class="form-group row">
         {{ field.errors }}
