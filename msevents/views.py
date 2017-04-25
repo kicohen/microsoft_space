@@ -339,16 +339,19 @@ def edit_event(request):
                 formset.data[key] = fix_date(formset.data[key])
 
         new_dates = []
-        for form in formset:
-            start_date = form.data.get('start_date')
-            end_date = form.data.get('end_date')
-            location_id = form.data.get('location_id')
-            if start_date and end_date and location_id:
-                new_dates.append(EventDate(start_date=start_date, end_date=end_date, location_id=location_id))
+        if formset.is_valid():
+            counter = 0
+            for form in formset:
+                form.is_valid()
+                start_date = form.cleaned_data.get('start_date')
+                end_date = form.cleaned_data.get('end_date')
+                location_id = form.cleaned_data.get('location_id')
+                if start_date and end_date and location_id:
+                    new_dates.append(EventDate(start_date=start_date, end_date=end_date, location_id=location_id, event_id=event))
 
         try:
             with transaction.atomic():
-                # EventDate.objects.filter(event_id=event).delete()
+                EventDate.objects.filter(event_id=event).delete()
                 EventDate.objects.bulk_create(new_dates)
         except IntegrityError: #If the transaction failed
             # Error
@@ -367,7 +370,7 @@ def edit_event(request):
     context['event_form'] = event_form
     context['formset'] = formset
     # Render the request
-    return render(request, 'msevents/event_update2.html', context)
+    return render(request, 'msevents/event_update.html', context)
 
 ################################################################
 #                       Location Pages                         #
