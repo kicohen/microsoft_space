@@ -104,4 +104,4 @@ class EventDateLocation(models.Model):
 class EventRole(models.Model):
 	user_id = models.ForeignKey(User, blank=True, null=True)
 	event_id = models.ForeignKey(Event)
-	name = models.CharField(max_length=160)
+	name = models.CharField(max_length=160, default="Gate Keeper")

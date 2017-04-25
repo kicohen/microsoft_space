@@ -87,11 +87,10 @@ def fix_date(datetime):
     am = time[-2:]
     if am == 'PM':
         hour = str(int(hour)+12)
-    if int(minutes) < 10:
+    if int(minutes) < 10 and int(minutes) != 0:
         minutes = '0'+minutes
     if int(hour) < 10:
         hour = '0'+hour
-    print(date+hour+minutes)
     return(date+" "+hour+":"+minutes)
 
 class CustomLocationChoiceField(forms.ModelChoiceField):

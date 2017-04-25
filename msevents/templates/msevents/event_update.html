@@ -37,7 +37,7 @@
 	            <div class='col-sm-6'>
 	                <div class="form-group">
 	                    <div class='input-group date' id="{{ field.auto_id }}_cal">
-	                        <input type='text' class="form-control" name="{{ field.html_name }}" id="{{ field.auto_id }}" value="{{ field.value|date:'m/d/Y h:m A'|default_if_none:'' }}"/>
+	                        <input type='text' class="form-control" name="{{ field.html_name }}" id="{{ field.auto_id }}" value="{{ field.value|date:'m/d/Y h:i A'|default_if_none:'' }}"/>
 	                        <span class="input-group-addon">
 	                            <span class="glyphicon glyphicon-calendar"></span>
 	                        </span>
