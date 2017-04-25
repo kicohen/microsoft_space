@@ -9,6 +9,7 @@ This webapp is meant to be used both by users of the Microsoft Space and by the 
 * Django Version: 1.10.4
 * Python Version: 3.5.1
 * Development Database: sqlite
+* Production Database: mysql
 
 Uses angularJS, bootstrap and interactJS on clientside libraries included in repo.
 
@@ -20,17 +21,17 @@ You will also need to create your own config.ini file in the main directory of t
 ### Features Implemented:
 * User Registration
 * Calendar
-
-### Features Partially Implemented:
 * Requesting Events
 * Static pages
 * Viewing Events
 * View users list
+* Edit and View User Profile
+* Event Locations
+
+### Features Partially Implemented:
+* Event Roles
 
 ### Features Coming Soon:
-* Edit and View User Profile
-* Event Roles
-* Event Locations
 * Messages on events (When creating an event there should be a "Event request successfully submitted." message.)
 
 ### Bugs:

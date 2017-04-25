@@ -85,7 +85,7 @@ class Event(models.Model):
         default=INITIAL_REQUEST,
     )
 	contact = models.ForeignKey(User)
-	head_count = models.IntegerField(blank=True)
+	head_count = models.IntegerField(blank=True, null=True)
 	open_to_public = models.BooleanField()
 	notes = models.TextField(max_length=1000, blank=True)
 

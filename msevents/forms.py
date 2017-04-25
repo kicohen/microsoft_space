@@ -77,9 +77,10 @@ class ProfileForm(forms.ModelForm):
         model = Profile
         fields = ('account_type',)
 
-
 def fix_date(datetime):
+    print(datetime)
     date = datetime[:datetime.find(' ')]
+    date.replace("/",'-')
     time = datetime[datetime.find(' '):]
     hour = time[1:time.find(":")]
     minutes = time[4:6]
@@ -90,6 +91,7 @@ def fix_date(datetime):
         minutes = '0'+minutes
     if int(hour) < 10:
         hour = '0'+hour
+    print(date+hour+minutes)
     return(date+" "+hour+":"+minutes)
 
 class CustomLocationChoiceField(forms.ModelChoiceField):
@@ -105,6 +107,7 @@ class EventDateForm(forms.ModelForm):
         start_date = self.data['start_date']
         end_date = self.data['end_date']
         self.data['start_date'] = fix_date(start_date)
+        print(self.data['start_date'])
         self.data['end_date'] = fix_date(end_date)
         return self.data
 

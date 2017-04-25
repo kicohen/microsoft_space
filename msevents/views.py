@@ -318,6 +318,7 @@ def edit_event(request):
     context['event_location_form'] = event_location_form
     return render(request, 'msevents/event_update.html', context)
 
+
 ################################################################
 #                       Location Pages                         #
 ################################################################

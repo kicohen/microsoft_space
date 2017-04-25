@@ -25,7 +25,7 @@ SECRET_KEY = '0eovnwhzgki9%ynky@qw-j5-^wpc3863t-j1xdhscxmwtp*_cj'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['128.237.207.138','localhost','127.0.0.1', '10.207.124.118','35.167.3.31']
+ALLOWED_HOSTS = ['128.237.207.138','localhost','127.0.0.1', '10.207.124.118','35.167.3.31', 'www.themicrosoft.space','themicrosoft.space','themicrosoftspace.com','www.themicrosoftspace.com']
 
 
 # Application definition
@@ -75,6 +75,15 @@ WSGI_APPLICATION = 'microsoftspace.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'microsoft',
+# 	    'USER': 'root',
+# 	    'PASSWORD': 'Tartans!'
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -106,8 +115,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'EST'
 
 USE_I18N = True
 
