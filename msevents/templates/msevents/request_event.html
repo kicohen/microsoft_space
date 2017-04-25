@@ -29,10 +29,11 @@
     </div>
   {% endfor %}
   {% for field in event_date_form.visible_fields %}
+  {% if forloop.counter0 <= 1 %}
     <div class="form-group row">
         {{ field.errors }}
         <label class="col-sm-2 col-form-label">{{ field.label }}</label> 
-    		<div class="container">
+        <div class="container">
         <div class="row">
             <div class='col-sm-6'>
                 <div class="form-group">
@@ -54,8 +55,7 @@
         </div>
         </div>
       </div>
-  {% endfor %}
-    {% for field in event_location_form.visible_fields %}
+    {% else %}
     <div class="form-group row">
         {{ field.errors }}
         <label class="col-sm-2 col-form-label">{{ field.label }}</label> 
@@ -63,6 +63,7 @@
           {{field|add_class:"form-control"}}
         </div>
     </div>
+    {% endif %}
   {% endfor %}
   <input type="submit" value="Request Event" class="btn btn-lg btn-primary btn-block" />
 </form>

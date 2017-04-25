@@ -96,10 +96,7 @@ class EventDate(models.Model):
 	event_id = models.ForeignKey(Event)
 	start_date = models.DateTimeField()
 	end_date = models.DateTimeField()
-
-class EventDateLocation(models.Model):
-	eventdate_id = models.ForeignKey(EventDate)
-	location_id = models.ForeignKey(Location)
+	location_id = models.ForeignKey(Location, blank=True, null=True)
 
 class EventRole(models.Model):
 	user_id = models.ForeignKey(User, blank=True, null=True)

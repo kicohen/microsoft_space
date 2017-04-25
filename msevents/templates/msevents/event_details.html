@@ -35,7 +35,7 @@
   	<tr>
   		<td>{{event_date.start_date|date:'M d, Y'}}</td>
   		<td>{{event_date.start_date|date:'H:i'}}</td>
-  		<td rowspan="2">Location:<br>The Microsoft Space</td>
+  		<td rowspan="2">Location:<br>{{event_date.location_id.building}}<br>{{event_date.location_id.room}}</td>
   	</tr>
   	<tr>
   		<td>{{event_date.end_date|date:'M d, Y'}}</td>

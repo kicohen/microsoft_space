@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, _get_queryset, get_list_or_404
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
-from django.db import transaction
+from django.db import IntegrityError, transaction
+from django.forms import modelformset_factory
 
 from django.contrib.auth.tokens import default_token_generator
 
@@ -51,6 +52,21 @@ def createContext(request):
 def clean_date(date):
     date=date.replace("-",'')
 
+def fix_date(datetime):
+    date = datetime[:datetime.find(' ')]
+    date.replace("/",'-')
+    time = datetime[datetime.find(' '):]
+    hour = time[1:time.find(":")]
+    minutes = time[4:6]
+    am = time[-2:]
+    if am == 'PM':
+        hour = str(int(hour)+12)
+    if int(minutes) < 10 and int(minutes) != 0:
+        minutes = '0'+minutes
+    if int(hour) < 10:
+        hour = '0'+hour
+    return(date+" "+hour+":"+minutes)
+
 def combine(*args):
     new_list = []
     for arg in args:
@@ -79,6 +95,22 @@ def admin_only(request):
     context = createContext(request)
     context['message'] = "You do not have rights to view this page."
     return render(request, 'msevents/home.html', context)
+
+def get_objects_or_404(klass, *args, **kwargs):
+    """
+    Get a set of filtered objects
+
+    Uses filter() to return objects, or raise a Http404 exception if
+    no objects matches.
+
+    klass may be a Model, Manager, or QuerySet object. All other passed
+    arguments and keyword arguments are used in the filter() query.
+    """
+    queryset = _get_queryset(klass)
+    objects = queryset.filter(*args, **kwargs)
+    if not objects:
+        raise Http404('No %s matches the given query.' % queryset.model._meta.object_name)
+    return objects
 
 ################################################################
 #                          User Pages                          #
@@ -223,9 +255,9 @@ def calendar(request):
 def events(request):
     if not is_admin(request):
         return admin_only(request)
-
     event_dates = EventDate.objects.filter(start_date__gte=datetime.now())
     context = createContext(request)
+    context['pastevents'] = False
     if event_dates.count() > 0:
         context['eventdates'] = event_dates.order_by('start_date')
         return render(request, 'msevents/events.html', context)
@@ -236,9 +268,9 @@ def events(request):
 def past_events(request):
     if not is_admin(request):
         return admin_only(request)
-
     event_dates = EventDate.objects.filter(start_date__lte=datetime.now())
     context = createContext(request)
+    context['pastevents'] = True
     if event_dates.count() > 0:
         context['eventdates'] = event_dates.order_by('start_date')
         return render(request, 'msevents/events.html', context)
@@ -252,18 +284,14 @@ def request_event(request):
     if request.method == 'POST':
         event_form = EventForm(request.POST)
         event_date_form = EventDateForm(request.POST)
-        event_location_form = EventDateLocationForm(request.POST)
         event_date_form.clean_date()
-        if event_form.is_valid() and event_date_form.is_valid() and event_location_form.is_valid():
+        if event_form.is_valid() and event_date_form.is_valid():
             event = event_form.save(commit=False)
             event.contact = request.user
             event.save()
             event_date = event_date_form.save(commit=False)
             event_date.event_id = event
             event_date.save()
-            event_location = event_location_form.save(commit=False)
-            event_location.eventdate_id = event_date
-            event_location.save()
             context['message']="Successfully requested event."
             return render(request, 'msevents/home.html', context)
         else: 
@@ -271,10 +299,8 @@ def request_event(request):
     else:
         event_form = EventForm()
         event_date_form = EventDateForm()
-        event_location_form = EventDateLocationForm()
     context['event_form'] = event_form
     context['event_date_form'] = event_date_form
-    context['event_location_form'] = event_location_form
     return render(request, 'msevents/request_event.html', context)
 
 def show_event(request):  
@@ -288,36 +314,60 @@ def show_event(request):
 
 @login_required
 def edit_event(request):
+    # Get event
     eid = request.GET.get('id', '')
-
     event = get_object_or_404(Event, pk=eid)
+    # Create base context
     context = createContext(request)
     context['event'] = event
-    event_date = get_object_or_404(EventDate, event_id=event)
-    event_location = get_object_or_404(EventDateLocation, eventdate_id=event_date)
+    # If the form is being submitted, process the request and make the changes
+    event_dates = EventDate.objects.filter(event_id=event)
+    DateFormSet = modelformset_factory(EventDate, form=EventDateForm, extra=0)
     if request.method == 'POST':
+        # Update the event model only
         if is_admin(request):
             event_form = EventAdminForm(request.POST, instance=event)
         else:
             event_form = EventForm(request.POST, instance=event)
-        event_date_form = EventDateForm(request.POST, instance=event_date)
-        event_location_form = EventDateLocationForm(request.POST, instance=event_location)
-        event_date_form.clean_date()
-        if forms_are_valid([event_date_form, event_form, event_location_form]):
-            save_forms([event_date_form, event_form, event_location_form])
-            context['message']="Successfully updated event."
-            return render(request, 'msevents/home.html', context)
+        # Only update if the form is valid
+        if event_form.is_valid():
+            event_form.save()
+        # Go through each of the event dates and locations
+        formset = DateFormSet(request.POST, queryset=event_dates)
+        for key in formset.data:
+            if key[-4:] == 'date':
+                formset.data[key] = fix_date(formset.data[key])
+
+        new_dates = []
+        for form in formset:
+            start_date = form.data.get('start_date')
+            end_date = form.data.get('end_date')
+            location_id = form.data.get('location_id')
+            if start_date and end_date and location_id:
+                new_dates.append(EventDate(start_date=start_date, end_date=end_date, location_id=location_id))
+
+        try:
+            with transaction.atomic():
+                # EventDate.objects.filter(event_id=event).delete()
+                EventDate.objects.bulk_create(new_dates)
+        except IntegrityError: #If the transaction failed
+            # Error
+            print("Error")
+        context['message']="Successfully updated event."
+        return render(request, 'msevents/home.html', context)
+    # Create the forms to be displayed in the update view
+    # The base event form
     if is_admin(request):
         event_form = EventAdminForm(instance=event)
     else:
         event_form = EventForm(instance=event)
-    event_date_form = EventDateForm(instance=event_date)
-    event_location_form = EventDateLocationForm(instance=event_location)
+    # Create the forms for the event date and locations
+    formset = DateFormSet(queryset=event_dates)
+    # Add the forms to the context
     context['event_form'] = event_form
-    context['event_date_form'] = event_date_form
-    context['event_location_form'] = event_location_form
-    return render(request, 'msevents/event_update.html', context)
-
+    context['formset'] = formset
+    # Render the request
+    return render(request, 'msevents/event_update2.html', context)
 
 ################################################################
 #                       Location Pages                         #

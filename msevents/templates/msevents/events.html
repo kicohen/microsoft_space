@@ -6,10 +6,15 @@
 <div class="button-group">
 	<a href="{% url 'members' %}" class="btn btn-primary" style="color: white">Members</a>
 	<a href="{% url 'locations' %}" class="btn btn-primary" style="color: white">Locations</a>
-	<a href="{% url 'past_events' %}" class="btn btn-primary" style="color: white">Past Events</a>
+	{% if pastevents %}
+		<a href="{% url 'events' %}" class="btn btn-primary" style="color: white">Future Events</a>
+	{% else %}
+		<a href="{% url 'past_events' %}" class="btn btn-primary" style="color: white">Past Events</a>
+	{% endif %}
 </div>
 <br>
 </div>
+{% if eventdates|length > 0 %}
 <div class="row">
 <table class="table table-bordered">
 		<thead style="text-align:center;">
@@ -34,4 +39,5 @@
 	{% endfor %}
 </table>
 </div>
+{% endif %}
 {% endblock %}

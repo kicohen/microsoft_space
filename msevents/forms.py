@@ -78,7 +78,6 @@ class ProfileForm(forms.ModelForm):
         fields = ('account_type',)
 
 def fix_date(datetime):
-    print(datetime)
     date = datetime[:datetime.find(' ')]
     date.replace("/",'-')
     time = datetime[datetime.find(' '):]
@@ -98,6 +97,8 @@ class CustomLocationChoiceField(forms.ModelChoiceField):
          return obj.get_full_name()
 
 class EventDateForm(forms.ModelForm):
+    location_id = CustomLocationChoiceField(queryset=Location.objects.all(), label="Location")
+
     class Meta:
         model = EventDate
         exclude = ('event_id',)
@@ -109,10 +110,3 @@ class EventDateForm(forms.ModelForm):
         print(self.data['start_date'])
         self.data['end_date'] = fix_date(end_date)
         return self.data
-
-class EventDateLocationForm(forms.ModelForm):
-    location_id = CustomLocationChoiceField(queryset=Location.objects.all(), label="Location")
-
-    class Meta:
-        model = EventDateLocation
-        exclude = ('event_id','eventdate_id')
