@@ -30,9 +30,11 @@ You will also need to create your own config.ini file in the main directory of t
 
 ### Features Partially Implemented:
 * Event Roles
+* Sending Emails
 
-### Features Coming Soon:
-* Messages on events (When creating an event there should be a "Event request successfully submitted." message.)
+### Features To Be Added Soon:
+
 
 ### Bugs:
-* Location on event date on event details pages
+* Event Date picker on Event Update page.
+* URLs on edit post

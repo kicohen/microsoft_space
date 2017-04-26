@@ -96,22 +96,6 @@ def admin_only(request):
     context['message'] = "You do not have rights to view this page."
     return render(request, 'msevents/home.html', context)
 
-def get_objects_or_404(klass, *args, **kwargs):
-    """
-    Get a set of filtered objects
-
-    Uses filter() to return objects, or raise a Http404 exception if
-    no objects matches.
-
-    klass may be a Model, Manager, or QuerySet object. All other passed
-    arguments and keyword arguments are used in the filter() query.
-    """
-    queryset = _get_queryset(klass)
-    objects = queryset.filter(*args, **kwargs)
-    if not objects:
-        raise Http404('No %s matches the given query.' % queryset.model._meta.object_name)
-    return objects
-
 ################################################################
 #                          User Pages                          #
 ################################################################
@@ -294,8 +278,6 @@ def request_event(request):
             event_date.save()
             context['message']="Successfully requested event."
             return render(request, 'msevents/home.html', context)
-        else: 
-            print("error")
     else:
         event_form = EventForm()
         event_date_form = EventDateForm()
@@ -309,7 +291,11 @@ def show_event(request):
     event = get_object_or_404(Event, pk=eid)
     context = createContext(request)
     context['event'] = event
-    context['event_dates'] = EventDate.objects.filter(event_id=event)
+    context['event_dates'] = EventDate.objects.filter(event_id=event).filter(start_date__gte=datetime.now())
+    context['past_event_dates'] = EventDate.objects.filter(event_id=event).filter(start_date__lte=datetime.now())
+    context['can_edit'] = False
+    if event.contact == request.user:
+        context['can_edit'] = True
     return render(request, 'msevents/event_details.html', context)
 
 @login_required
@@ -334,13 +320,14 @@ def edit_event(request):
             event_form.save()
         # Go through each of the event dates and locations
         formset = DateFormSet(request.POST, queryset=event_dates)
+        # Correct dates from the datetimepicker format to a django readable format.
         for key in formset.data:
             if key[-4:] == 'date':
                 formset.data[key] = fix_date(formset.data[key])
-
-        new_dates = []
+        
         if formset.is_valid():
             counter = 0
+            new_dates = []
             for form in formset:
                 form.is_valid()
                 start_date = form.cleaned_data.get('start_date')

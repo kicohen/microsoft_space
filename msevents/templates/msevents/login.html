@@ -72,7 +72,10 @@ body {
         <label for="inputPassword" class="sr-only">Password</label>
         <input name="password" type="password" id="{{ form.password.id_for_label }}" class="form-control" placeholder="Password" required>
         <input type="submit" value="Login" class="btn btn-lg btn-primary btn-block" />
+        <br>
+        <a href="{% url 'register' %}" class="btn btn-success btn-lg" style="width: 100%;">Create Account</a>
         <input type="hidden" name="next" value="{{ next }}" />
+        
         {% csrf_token %}
       </form>
 

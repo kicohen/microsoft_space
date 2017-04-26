@@ -2,29 +2,48 @@
 
 {% block content %}
 {% load msevents_extras %}
-<div class="container" style="text-align: right;">
+{% if logged_in and account_type != 'Event Organizer' %}
+<div class="row" style="text-align: right;">
 <a class="btn btn-primary" href="edit/?id={{event.id}}">Edit event</a>
 </div>
+{% endif %}
 <br>
-<div class="container">
+<div class="row">
 <div class="col-sm-6">
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">{{event.name}}</h3>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">{{event.name}}</h3>
+    </div>
+    <div class="panel-body">
+      <strong>{{event.organization}}</strong><br>
+      {{event.contact.first_name}} {{event.contact.last_name}} | {{event.contact.email}}
+      <br>
+      {{ event.EVENT_STATUS_LOOKUP|get_item:event.status }}
+      <br>
+    	Expected Head Count: {{event.head_count}}
+    </div>
   </div>
-  <div class="panel-body">
-    <strong>{{event.organization}}</strong><br>
-    {{event.contact.first_name}} {{event.contact.last_name}} | {{event.contact.email}}
-    <br>
-    {{ event.EVENT_STATUS_LOOKUP|get_item:event.status }}
-    <br>
-  	Expected Head Count: {{event.head_count}}
-  </div>
-</div>
+  {% for event_date in past_event_dates %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{event.name}}</h3>
+      </div>
+      <table class="table">
+        <tr>
+          <td>{{event_date.start_date|date:'M d, Y'}}</td>
+          <td>{{event_date.start_date|date:'H:i'}}</td>
+          <td rowspan="2">Location:<br>{{event_date.location_id.building}}<br>{{event_date.location_id.room}}</td>
+        </tr>
+        <tr>
+          <td>{{event_date.end_date|date:'M d, Y'}}</td>
+          <td>{{event_date.end_date|date:'H:i'}}</td>
+        </tr>
+      </table>
+    </div>
+  {% endfor %}  
 </div>
 
 <div class="col-sm-6">
-<div class="container-fluid">
 {% for event_date in event_dates %}
 
 <div class="panel panel-default">
@@ -48,6 +67,4 @@
 </div>
 	
 </div>
-</div>
-
 {% endblock %}
