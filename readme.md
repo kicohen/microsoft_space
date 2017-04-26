@@ -45,4 +45,7 @@ You will also need to create your own config.ini file in the main directory of t
 * Responsiveness of slideshow on About page.
 * Event Date picker on Event Update page.
 * Verify Dates on Event Request
+* Security on person requesting event being able to change their own event status
+* Checking against other events at the same time.
+* Add location to table of events.
 
