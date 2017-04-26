@@ -42,4 +42,6 @@ You will also need to create your own config.ini file in the main directory of t
 * Duplicating Events
 
 ### Bugs:
+* Responsiveness of slideshow on About page.
 * Event Date picker on Event Update page.
+
