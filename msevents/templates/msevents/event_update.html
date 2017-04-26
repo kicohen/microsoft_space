@@ -13,6 +13,13 @@
 {% block content %}
 
 <form method="post" enctype="multipart/form-data" action="{% url 'edit_event' %}?id={{event.id}}">
+<div class="container">
+  <div class="col-sm-6">
+  <div class="panel panel-default">
+  <div class="panel-heading">
+    {{ event.name }}
+  </div>
+  <div class="panel-body">
   {% csrf_token %}
   {% for field in event_form.visible_fields %}
     <div class="form-group row">
@@ -28,10 +35,18 @@
         </div>
     </div>
   {% endfor %}
+  </div>
+  </div>
+  </div>
+  <div class="col-sm-6">
   {{ formset.management_form }}
   {% for form in formset %}
-  <hr>
   <div class="formset">
+  <div class="panel panel-default">
+  <div class="panel-heading">
+    Event Date and Location
+  </div>
+  <div class="panel-body" style="padding-bottom: 50px;">
   {{ form.id }}
     {% for field in form.visible_fields %}
         {% if forloop.counter0 <= 1 %}
@@ -40,7 +55,7 @@
   	        <label class="col-sm-2 col-form-label">{{ field.label }}</label> 
   	    		<div class="container">
   	        <div class="row">
-  	            <div class='col-sm-6'>
+  	            <div class='col-sm-4'>
   	                <div class="form-group">
   	                    <div class="input-group date cal" id="{{ field.html_name }}">
   	                        <input type='text' class="form-control" name="{{ field.html_name }}" id="{{ field.auto_id }}" value="{{ field.value|date:'m/d/Y h:i A'|default_if_none:'' }}"/>
@@ -76,15 +91,20 @@
           {% endif %}
   	  {% endfor %}
     </div>
+  </div>
+  </div>
   {% endfor %}
   <hr>
+  </div>
   <input type="submit" value="Update Event" class="btn btn-lg btn-primary btn-block" />
 </form>
 <script src="{% static 'js/jquery.formset.js' %}"></script>
 <script>
     $('.formset').formset({
         addText: 'Add Event Date',
+        addCssClass: "btn btn-success centered-button small-margin",
         deleteText: 'Remove Event Date',
+        deleteCssClass: 'btn btn-danger centered-button',
     });
 </script>
 {% endblock %}

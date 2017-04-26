@@ -92,3 +92,13 @@
 .navbar-brand:hover{	
 	background-color: #080909 !important;
 }
+
+.centered-button{
+	width: 50%;
+	margin-left: 25%;
+	margin-top: -125px;
+}
+
+.small-margin{
+	margin-top: -25px !important;
+}
