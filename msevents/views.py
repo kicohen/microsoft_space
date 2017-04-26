@@ -340,13 +340,14 @@ def edit_event(request):
     eid = request.GET.get('id', '')
     event = get_object_or_404(Event, pk=eid)
     status = event.status
-    if not is_admin(request) or event.contact != request.user:
-        return admin_only(request)
+    if not event.open_to_public:
+        if event.contact != request.user and not is_admin(request):
+            return admin_only(request)
     # Create base context
     context = createContext(request)
     context['event'] = event
     # If the form is being submitted, process the request and make the changes
-    event_dates = EventDate.objects.filter(event_id=event)
+    event_dates = EventDate.objects.filter(event_id=event).order_by('start_date')
     DateFormSet = modelformset_factory(EventDate, form=EventDateForm, extra=0)
     if request.method == 'POST':
         # Update the event model only
