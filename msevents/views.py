@@ -54,19 +54,24 @@ def clean_date(date):
     date=date.replace("-",'')
 
 def fix_date(datetime):
-    date = datetime[:datetime.find(' ')]
-    date.replace("/",'-')
-    time = datetime[datetime.find(' '):]
-    hour = time[1:time.find(":")]
-    minutes = time[4:6]
-    am = time[-2:]
-    if am == 'PM':
-        hour = str(int(hour)+12)
-    if int(minutes) < 10 and int(minutes) != 0:
-        minutes = '0'+minutes
-    if int(hour) < 10:
-        hour = '0'+hour
-    return(date+" "+hour+":"+minutes)
+    if not datetime:
+        return None
+    try:
+        date = datetime[:datetime.find(' ')]
+        date.replace("/",'-')
+        time = datetime[datetime.find(' '):]
+        hour = time[1:time.find(":")]
+        minutes = time[4:6]
+        am = time[-2:]
+        if am == 'PM':
+            hour = str(int(hour)+12)
+        if int(minutes) < 10 and int(minutes) != 0:
+            minutes = '0'+minutes
+        if int(hour) < 10:
+            hour = '0'+hour
+        return(date+" "+hour+":"+minutes)
+    except:
+        return None
 
 def combine(*args):
     new_list = []
@@ -362,9 +367,8 @@ def edit_event(request):
         formset = DateFormSet(request.POST, queryset=event_dates)
         # Correct dates from the datetimepicker format to a django readable format.
         for key in formset.data:
-            if key[-4:] == 'date':
-                formset.data[key] = fix_date(formset.data[key])
-        
+                if key[-4:] == 'date':
+                    formset.data[key] = fix_date(formset.data[key])
         if formset.is_valid():
             counter = 0
             new_dates = []
@@ -376,15 +380,15 @@ def edit_event(request):
                 if start_date and end_date and location_id:
                     new_dates.append(EventDate(start_date=start_date, end_date=end_date, location_id=location_id, event_id=event))
 
-        try:
-            with transaction.atomic():
-                EventDate.objects.filter(event_id=event).delete()
-                EventDate.objects.bulk_create(new_dates)
-        except IntegrityError: #If the transaction failed
-            # Error
-            print("Error")
-        context['message']="Successfully updated event."
-        return render(request, 'msevents/home.html', context)
+            try:
+                with transaction.atomic():
+                    EventDate.objects.filter(event_id=event).delete()
+                    EventDate.objects.bulk_create(new_dates)
+            except IntegrityError: #If the transaction failed
+                # Error
+                print("Error")
+            context['message']="Successfully updated event."
+            return render(request, 'msevents/home.html', context)
     # Create the forms to be displayed in the update view
     # The base event form
     if is_admin(request):
