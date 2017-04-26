@@ -11,7 +11,12 @@ This webapp is meant to be used both by users of the Microsoft Space and by the 
 * Development Database: sqlite
 * Production Database: mysql
 
-Uses angularJS, bootstrap and interactJS on clientside libraries included in repo.
+### Clientside libraries include:
+* angularJS
+* bootstrap
+* interactJS
+
+Libraries are included in the repo.
 
 ### Configuration
 To deploy this app, it highly suggested you change database systems to a more heavy duty database system such as mySQL.
