@@ -93,6 +93,8 @@ def save_forms(forms):
         form.save()
 
 def is_admin(request):
+    if str(request.user) == 'AnonymousUser':
+        return False
     if request.user.profile.account_type == 'AD':
         return True
     return False
@@ -240,7 +242,7 @@ def delete_user(request):
     context = createContext(request)
     name = user.first_name + " " + user.last_name
     user.delete()
-    return members(request, "Successfully deleted location "+name)
+    return members(request, "Successfully deleted user "+name)
 
 ################################################################
 #                         Event Pages                          #
@@ -306,10 +308,9 @@ def request_event(request):
             email_body = "New Event Request."
             users = get_list_or_none(Profile, account_type="AD")
             admin_list = [user.user.email for user in users]
-            send_mass_mail(subject="New Event Request",
-                  message= email_body,
-                  from_email="Microsoft Space <microsoft@cmu.edu>",
-                  recipient_list=admin_list)
+            for email in admin_list:
+                send_mail(subject="New Event Request", message=email_body, from_email="Microsoft Space <microsoft@cmu.edu>", recipient_list=[email] )
+            # send_mass_mail("New Event Request", email_body, "Microsoft Space <microsoft@cmu.edu>", admin_list)
             return render(request, 'msevents/home.html', context)
     else:
         event_form = EventForm()
@@ -321,12 +322,15 @@ def request_event(request):
 def show_event(request):  
     eid = request.GET.get('id', '')
     event = get_object_or_404(Event, pk=eid)
+    if not event.open_to_public:
+        if event.contact != request.user and not is_admin(request):
+            return admin_only(request)
     context = createContext(request)
     context['event'] = event
     context['event_dates'] = EventDate.objects.filter(event_id=event).filter(start_date__gte=datetime.now())
     context['past_event_dates'] = EventDate.objects.filter(event_id=event).filter(start_date__lte=datetime.now())
     context['can_edit'] = False
-    if event.contact == request.user:
+    if event.contact == request.user or is_admin(request):
         context['can_edit'] = True
     return render(request, 'msevents/event_details.html', context)
 
@@ -336,6 +340,8 @@ def edit_event(request):
     eid = request.GET.get('id', '')
     event = get_object_or_404(Event, pk=eid)
     status = event.status
+    if not is_admin(request) or event.contact != request.user:
+        return admin_only(request)
     # Create base context
     context = createContext(request)
     context['event'] = event

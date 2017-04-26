@@ -13,7 +13,7 @@
 </thead>
 {% for m in members %}
 <tr>
-    <td><a href="{% url 'users' %}?id={{m.profile.user_id}}">{{ m.username}}</a></td>
+    <td><a href="{% url 'user' %}?id={{m.profile.user_id}}">{{ m.username}}</a></td>
     <td>{{ m.first_name}}</td>
     <td>{{ m.last_name}}</td>
     <td>{{ m.profile.ACCOUNT_TYPE_LOOKUP|get_item:m.profile.account_type }}</td>
