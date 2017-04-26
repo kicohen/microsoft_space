@@ -32,13 +32,14 @@ You will also need to create your own config.ini file in the main directory of t
 * View users list
 * Edit and View User Profile
 * Event Locations
+* Sending Emails
 
 ### Features Partially Implemented:
 * Event Roles
-* Sending Emails
 
 ### Features To Be Added Soon:
 * Keycard checkout
+* Duplicating Events
 
 ### Bugs:
 * Event Date picker on Event Update page.
