@@ -11,7 +11,12 @@ This webapp is meant to be used both by users of the Microsoft Space and by the 
 * Development Database: sqlite
 * Production Database: mysql
 
-Uses angularJS, bootstrap and interactJS on clientside libraries included in repo.
+### Clientside libraries include:
+* angularJS
+* bootstrap
+* interactJS
+
+Libraries are included in the repo.
 
 ### Configuration
 To deploy this app, it highly suggested you change database systems to a more heavy duty database system such as mySQL.
@@ -27,13 +32,16 @@ You will also need to create your own config.ini file in the main directory of t
 * View users list
 * Edit and View User Profile
 * Event Locations
+* Sending Emails
 
 ### Features Partially Implemented:
 * Event Roles
-* Sending Emails
 
 ### Features To Be Added Soon:
 * Keycard checkout
+* Duplicating Events
 
-### Bugs:
+### Bugs and other Fixes:
+* Responsiveness of slideshow on About page.
 * Event Date picker on Event Update page.
+
