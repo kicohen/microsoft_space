@@ -44,4 +44,5 @@ You will also need to create your own config.ini file in the main directory of t
 ### Bugs and other Fixes:
 * Responsiveness of slideshow on About page.
 * Event Date picker on Event Update page.
+* Verify Dates on Event Request
 
