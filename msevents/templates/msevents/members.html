@@ -13,12 +13,13 @@
 </thead>
 {% for m in members %}
 <tr>
-    <td><a href="users/?id={{m.profile.user_id}}">{{ m.username}}</a></td>
+    <td><a href="{% url 'users' %}?id={{m.profile.user_id}}">{{ m.username}}</a></td>
     <td>{{ m.first_name}}</td>
     <td>{{ m.last_name}}</td>
     <td>{{ m.profile.ACCOUNT_TYPE_LOOKUP|get_item:m.profile.account_type }}</td>
     <td>{{ m.email }}</td>
-    <td><a href="user/edit/?id={{m.pk}}"><span class="glyphicon glyphicon-edit"></span></a></td>
+    <td><a href="{% url 'edit_user' %}?id={{m.pk}}"><span class="glyphicon glyphicon-edit"></span></a>
+        <a href="{% url 'delete_user' %}?id={{m.pk}}"><span class="glyphicon glyphicon-trash"></span></a></td>
 </tr>
 {% endfor %}
 </table>

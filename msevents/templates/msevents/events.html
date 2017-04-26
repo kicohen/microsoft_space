@@ -28,7 +28,7 @@
 	{% for event_date in eventdates %}
 		<tr class="{{event_date.event_id.status}}">
 			<td>{{event_date.start_date|date}}</td>
-			<td><a href="events/?id={{event_date.event_id.pk}}">{{event_date.event_id.name}}</a><br><i>{{event_date.event_id.organization}}</i></td>
+			<td><a href="{% url 'show_event' %}?id={{event_date.event_id.pk}}">{{event_date.event_id.name}}</a><br><i>{{event_date.event_id.organization}}</i></td>
 			<td>{{event_date.event_id.contact.first_name}}
 			{{event_date.event_id.contact.last_name}}<br>
 			{{event_date.event_id.contact.email}}</td>

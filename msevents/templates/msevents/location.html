@@ -4,7 +4,7 @@
 <div class="">
     {% if edit %}
     <h3>Edit Location</h3>
-    <form method="post" action="?id={{location.pk}}">
+    <form method="post" action="{% url 'edit_location' %}?id={{location.pk}}">
     {% else %}
     <h3>Add new location</h3>
     <form method="post" action="{% url 'location' %}">

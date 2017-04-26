@@ -96,6 +96,12 @@ def admin_only(request):
     context['message'] = "You do not have rights to view this page."
     return render(request, 'msevents/home.html', context)
 
+def get_list_or_none(klass, *args, **kwargs):
+    queryset = _get_queryset(klass)
+    obj_list = list(queryset.filter(*args, **kwargs))
+    if not obj_list:
+        return None
+    return obj_list
 ################################################################
 #                          User Pages                          #
 ################################################################
@@ -216,6 +222,19 @@ def edit_user(request):
     context['profile_form'] = ProfileForm(instance=profile)
     return render(request, 'msevents/user_edit.html', context)
 
+@login_required
+def delete_user(request):
+    if not is_admin(request):
+        return admin_only(request)
+
+    user_id = request.GET.get('id', '')
+    user = get_object_or_404(User, pk=user_id)
+    profile = user.profile
+    context = createContext(request)
+    name = user.first_name + " " + user.last_name
+    user.delete()
+    return members(request, "Successfully deleted location "+name)
+
 ################################################################
 #                         Event Pages                          #
 ################################################################
@@ -276,7 +295,14 @@ def request_event(request):
             event_date = event_date_form.save(commit=False)
             event_date.event_id = event
             event_date.save()
-            context['message']="Successfully requested event."
+            context['message']="Thank you for requesting use of the space. We will get back to you shortly on whether or not your request has been approved."
+            email_body = "New Event Request."
+            users = get_list_or_none(Profile, account_type="AD")
+            for user in users:
+                send_mail(subject="New Event Request",
+                      message= email_body,
+                      from_email="Microsoft Space <microsoft@cmu.edu>",
+                      recipient_list=[user.user.email])
             return render(request, 'msevents/home.html', context)
     else:
         event_form = EventForm()
@@ -287,7 +313,6 @@ def request_event(request):
 
 def show_event(request):  
     eid = request.GET.get('id', '')
-
     event = get_object_or_404(Event, pk=eid)
     context = createContext(request)
     context['event'] = event
@@ -411,6 +436,9 @@ def edit_location(request):
 
 @login_required
 def delete_location(request):
+    if not is_admin(request):
+        return admin_only(request)
+
     location_id = request.GET.get('id', '')
     location = get_object_or_404(Location, pk=location_id)
     name = location.room

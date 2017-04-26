@@ -4,7 +4,7 @@
 {% load msevents_extras %}
 {% if logged_in and account_type != 'Event Organizer' %}
 <div class="row" style="text-align: right;">
-<a class="btn btn-primary" href="edit/?id={{event.id}}">Edit event</a>
+<a class="btn btn-primary" href="{% url 'edit_event' %}?id={{event.id}}">Edit event</a>
 </div>
 {% endif %}
 <br>

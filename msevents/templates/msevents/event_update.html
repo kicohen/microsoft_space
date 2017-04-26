@@ -12,7 +12,7 @@
 
 {% block content %}
 
-<form method="post" enctype="multipart/form-data" action="?id={{event.id}}">
+<form method="post" enctype="multipart/form-data" action="{% url 'edit_event' %}?id={{event.id}}">
   {% csrf_token %}
   {% for field in event_form.visible_fields %}
     <div class="form-group row">

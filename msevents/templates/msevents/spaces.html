@@ -1,6 +1,7 @@
 {% extends "msevents/base.html" %}
 
 {% block content %}
+{% load staticfiles %}
 <style type="text/css">
 .stylish-panel {
     padding: 20px 0;
@@ -52,7 +53,7 @@ bottom: 0;
     <div class="row stylish-panel">
       <div class="col-sm-4">
         <div>
-          <div class="circle-avatar" style='background-image: url("static/img/main_room.jpg")' alt="Texto Alternativo"></div>
+          <div class="circle-avatar" style='background-image: url({% static "img/main_room.jpg" %})'></div>
           <h2>Main Room</h2>
           <p>Lounge-type room with couches and relaxed seating. This can be rearranged to comfortably fit 50 people. Great for tech talks, lounging, meetings, content display, xbox tournaments, demos. Includes:
           </p>
@@ -67,7 +68,7 @@ bottom: 0;
       </div>
       <div class="col-sm-4">
         <div>
-          <div class="circle-avatar" style='background-image: url("static/img/ms_wall.jpg")' alt="Texto Alternativo"></div>
+          <div class="circle-avatar" style='background-image: url({% static "img/ms_wall.jpg" %})'></div>
           <h2>Lab</h2>
           <p>63ft-long room with standing work space and nook with relaxed seating and 72inch tv w/ sonos capability. Great for working, building, lounging, large group hacks, team or club meetings Includes:
           </p>
@@ -80,7 +81,7 @@ bottom: 0;
       </div>
       <div class="col-sm-4">
         <div>
-          <div class="circle-avatar" style='background-image: url("static/img/office.jpg")' alt="Texto Alternativo"></div>
+          <div class="circle-avatar" style='background-image: url("{% static "img/office.jpg" %}")'></div>
           <h2>Office</h2>
           <p>Three separate closed work spaces attached to lab. Great for working privately and quietly. Includes ( per office ):
           </p>

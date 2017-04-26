@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^users/$', msevents_views.user, name='user'),
     url(r'^profile$', msevents_views.profile, name='profile'),
     url(r'^user/edit/$', msevents_views.edit_user, name='edit_user'),
+    url(r'^user/delete/$', msevents_views.delete_user, name='delete_user'),
     url(r'^login$', auth_views.login, {'template_name':'msevents/login.html'}, name='login'),
     url(r'^logout/$',auth_views.logout, {'next_page':'home'}, name='logout'),
     url(r'^register$', msevents_views.register, name='register'),
