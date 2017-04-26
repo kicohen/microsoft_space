@@ -9,10 +9,11 @@ from django.forms import modelformset_factory
 from django.contrib.auth.tokens import default_token_generator
 
 from django.core import serializers
-from django.core.mail import send_mail
+from django.core.mail import send_mail, send_mass_mail
 
 from .models import *
 from .forms import *
+from .emails import *
 
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -102,6 +103,7 @@ def get_list_or_none(klass, *args, **kwargs):
     if not obj_list:
         return None
     return obj_list
+
 ################################################################
 #                          User Pages                          #
 ################################################################
@@ -298,11 +300,11 @@ def request_event(request):
             context['message']="Thank you for requesting use of the space. We will get back to you shortly on whether or not your request has been approved."
             email_body = "New Event Request."
             users = get_list_or_none(Profile, account_type="AD")
-            for user in users:
-                send_mail(subject="New Event Request",
-                      message= email_body,
-                      from_email="Microsoft Space <microsoft@cmu.edu>",
-                      recipient_list=[user.user.email])
+            admin_list = [user.user.email for user in users]
+            send_mass_mail(subject="New Event Request",
+                  message= email_body,
+                  from_email="Microsoft Space <microsoft@cmu.edu>",
+                  recipient_list=admin_list)
             return render(request, 'msevents/home.html', context)
     else:
         event_form = EventForm()
@@ -328,6 +330,7 @@ def edit_event(request):
     # Get event
     eid = request.GET.get('id', '')
     event = get_object_or_404(Event, pk=eid)
+    status = event.status
     # Create base context
     context = createContext(request)
     context['event'] = event
@@ -342,6 +345,18 @@ def edit_event(request):
             event_form = EventForm(request.POST, instance=event)
         # Only update if the form is valid
         if event_form.is_valid():
+            if status == 'IR':
+                new_status = event_form.cleaned_data['status']
+                contact_email = event.contact.email
+                if new_status == 'CF':
+                    print("Send confirmation Email")
+                    body = event_confirmed()
+                    send_mail(subject="[Microsoft Space] Event Confirmed", message=body, from_email="Microsoft Space <kicohen@andrew.cmu.edu>", recipient_list=[contact_email])
+                elif new_status == 'ED':
+                    print("Send rejection Email")
+                    body = event_declined()
+                    send_mail(subject="[Microsoft Space] Event Declined", message=body, from_email="Microsoft Space <kicohen@andrew.cmu.edu>", recipient_list=[contact_email])
+
             event_form.save()
         # Go through each of the event dates and locations
         formset = DateFormSet(request.POST, queryset=event_dates)

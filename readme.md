@@ -33,8 +33,7 @@ You will also need to create your own config.ini file in the main directory of t
 * Sending Emails
 
 ### Features To Be Added Soon:
-
+* Keycard checkout
 
 ### Bugs:
 * Event Date picker on Event Update page.
-* URLs on edit post

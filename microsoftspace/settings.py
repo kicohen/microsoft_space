@@ -71,16 +71,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'microsoftspace.wsgi.application'
 
+config = configparser.ConfigParser()
+config.read(os.path.join(BASE_DIR, 'config.ini'))
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'microsoft',
-# 	    'USER': 'root',
-# 	    'PASSWORD': 'Tartans!'
+#       'ENGINE': 'django.db.backends.mysql',
+#       'NAME': config.get('Database', 'Name'),
+# 	  'USER': config.get('Database', 'User'),
+# 	  'PASSWORD': config.get('Database', 'Password')
 #     }
 # }
 
@@ -138,10 +140,6 @@ MAX_UPLOAD_SIZE = "5242880"
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-
-config = configparser.ConfigParser()
-config.read(os.path.join(BASE_DIR, 'config.ini'))
 
 EMAIL_HOST = config.get('Email', 'Host')
 EMAIL_PORT = config.get('Email', 'Port')
