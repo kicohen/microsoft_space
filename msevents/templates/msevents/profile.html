@@ -1,6 +1,7 @@
 {% extends "msevents/base.html" %}
 
 {% block content %}
+{% load msevents_extras %}
 <div class="panel panel-default">
   <!-- Default panel contents -->
   <div class="panel-heading">User Info</div>
@@ -25,7 +26,7 @@
 		<tr>
 			<td>{{event.name}}</td>
 			<td>{{event.organization}}</td>
-			<td>{{event.status}}</td>
+			<td>{{ event.EVENT_STATUS_LOOKUP|get_item:event.status }}</td>
 		</tr>
 		{% endfor %}
   </table>
