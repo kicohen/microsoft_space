@@ -41,7 +41,7 @@ You will also need to create your own config.ini file in the main directory of t
 * Keycard checkout
 * Duplicating Events
 
-### Bugs:
+### Bugs and other Fixes:
 * Change the event status on the profile page to something that is easier to understand
 * Responsiveness of slideshow on About page.
 * Event Date picker on Event Update page.
